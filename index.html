@@ -1,11 +1,58 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Dino Run And Jump</title>
-    </head>
-    <body>
-        <img src="Game/img/ChromeDino.jpg" width="900" height="850"> 
 
-        <a href="Game/index.html">View</a>
-        <a href="GUI/login.html">Client</a>
-    </body>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Dino Run And Jump</title>
+    <link rel="stylesheet" href="./static/css/bootstrap.min.css'" type="text/css">
+    <script src="./static/js/bootstrap.bundle.min.js'" charset="utf-8" type="text/javascript"></script>
+    <script src="./static/js/qr-code-styling.js" charset="utf-8" type="text/javascript"></script>
+</head>
+
+<body>
+    <!-- <img src="game/img/ChromeDino.png" width="900" height="850">  -->
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="game/index.html" class="btn btn-primary">View</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="player/login.html" id="scan-page-qrcode" class="btn btn-primary">Client</a>
+                <!-- <div id="scan-page-qrcode"></div> -->
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+
+    const qrCode = new QRCodeStyling({
+        width: 300,
+        height: 300,
+        type: "svg",
+        data: "player/login.html",
+        image: "game/img/ChromeDino.png",
+        imageOptions: {
+            hideBackgroundDots: true,
+            imageSize: 1,
+            margin: 0
+        },
+        dotsOptions: {
+            color: "#0e0e0e",
+            type: "square"
+        },
+        backgroundOptions: {
+            color: "#ffffff",
+        },
+        imageOptions: {
+            crossOrigin: "anonymous",
+            margin: 20
+        }
+    });
+
+    qrCode.append(document.getElementById("scan-page-qrcode"));
+</script>
+
 </html>
