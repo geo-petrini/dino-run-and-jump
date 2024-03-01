@@ -13,66 +13,6 @@ const firebaseConfig = {
     measurementId: "G-GTFGZJF3QY"
   };
 
-/**
- * La funzione setSettingsPhaser, imposta le funzioni principali di phaser e 
- * imposta i metodi preload, create e update che saranno poi richiamati da phaser
- * stesso per far funzionare il gioco. Inoltre crea il gioco all'interno del div
- * con l'id "gameDiv".
- */
- function setSettingsPhaser() {
-
-    var sceneLobby = {
-        key: 'sceneLobby',
-        preload: preloadGame,
-        create: createGame,
-        update: updateLobby
-    };
-    var sceneGame = {
-        key: 'sceneGame',
-        preload: preloadGame,
-        create: createGame,
-        update: updateGame
-    };
-
-    var config = {
-        type: Phaser.auto,
-        width: window.innerWidth,
-        height: window.innerHeight,
-
-        scene: [sceneLobby, sceneGame],
-
-        scale: {
-            autoCenter: Phaser.Scale.CENTER_BOTH,
-        },
-
-        physics: {
-            default: 'arcade',
-            arcade: {
-                gravity: {
-                    y: 3000
-                },
-                checkCollision: {
-                    up: true,
-                    down: false,
-                    left: false,
-                    right: true
-                },
-                debug: false
-            }
-        },
-
-        parent: "gameDiv",
-
-        dom: {
-            createContainer: true
-        },
-
-        //backgroundColor: 0xDDDDDD
-        backgroundColor: 0xFFFFFF,
-    };
-    game = new Phaser.Game(config);
-}
-
 //#region dichiarazione costanti 
 
 // Inizializzare Firebase
@@ -125,6 +65,67 @@ var diniJumps = [];
 var diniColor = [];
 var checkFirst = false;
 //#endregion
+
+
+/**
+ * La funzione setSettingsPhaser, imposta le funzioni principali di phaser e 
+ * imposta i metodi preload, create e update che saranno poi richiamati da phaser
+ * stesso per far funzionare il gioco. Inoltre crea il gioco all'interno del div
+ * con l'id "gameDiv".
+ */
+function setSettingsPhaser() {
+
+    var sceneLobby = {
+        key: 'sceneLobby',
+        preload: preloadGame,
+        create: createGame,
+        update: updateLobby
+    };
+    var sceneGame = {
+        key: 'sceneGame',
+        preload: preloadGame,
+        create: createGame,
+        update: updateGame
+    };
+
+    var config = {
+        type: Phaser.auto,
+        width: window.innerWidth,
+        height: window.innerHeight,
+
+        scene: [sceneLobby, sceneGame],
+
+        scale: {
+            autoCenter: Phaser.Scale.CENTER_BOTH,
+        },
+
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: {
+                    y: 3000
+                },
+                checkCollision: {
+                    up: true,
+                    down: false,
+                    left: false,
+                    right: true
+                },
+                debug: false
+            }
+        },
+
+        parent: "gameDiv",
+
+        dom: {
+            createContainer: true
+        },
+
+        //backgroundColor: 0xDDDDDD
+        backgroundColor: 0xFFFFFF,
+    };
+    game = new Phaser.Game(config);
+}
 
 /**
  * Questo codice viene richiamato quando un nuovo giocatore si collega alla sessione.
