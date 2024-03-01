@@ -1,17 +1,17 @@
 var host = "" //"/dino-run-and-jump/Game";
 var game;
 
-//configurazione firebase
-var firebaseConfig = {
-    apiKey: "AIzaSyA4fyvc6p7bnP6TipjCpcc4V-dhysnRdx0",
-    authDomain: "dino-run-and-jump-d2cdb.firebaseapp.com",
-    databaseURL: "https://dino-run-and-jump-d2cdb-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "dino-run-and-jump-d2cdb",
-    storageBucket: "dino-run-and-jump-d2cdb.appspot.com",
-    messagingSenderId: "200118050769",
-    appId: "1:200118050769:web:71d81d4e42b99e56110af0",
-    measurementId: "G-S7CQ1S72TK"
-};
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+    apiKey: "AIzaSyApE5ebUj8KaGFopZyUJpeRM0VlpHsQLDc",
+    authDomain: "dino-run-and-jump-d4065.firebaseapp.com",
+    databaseURL: "https://dino-run-and-jump-d4065-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "dino-run-and-jump-d4065",
+    storageBucket: "dino-run-and-jump-d4065.appspot.com",
+    messagingSenderId: "205261962038",
+    appId: "1:205261962038:web:3d516a8a4080aa65b61197",
+    measurementId: "G-GTFGZJF3QY"
+  };
 
 /**
  * La funzione setSettingsPhaser, imposta le funzioni principali di phaser e 

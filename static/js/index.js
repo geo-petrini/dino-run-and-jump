@@ -191,6 +191,8 @@ function loginUser() {
  * La funzione logoutUser permette all'utente di disconnettersi dal proprio account.
  */
 function logoutUser() {
+    const nickname = firebase.auth().currentUser.email.split("@")[0];
+    console.log(`logging out ${nickname}`);
     firebase.auth().signOut().then(function () {
         location.reload();
     });
@@ -351,7 +353,7 @@ firebase.auth().onAuthStateChanged((user) => {
 function checkLoggedUser() {
     document.getElementById('dino').style.fill = document.getElementById('color_input').value;
     if (localStorage.getItem('guestId') != null) {
-        document.getElementById("user_menu").style.display = "none";
+        // document.getElementById("user_menu").style.display = "none";
     }
 }
 
