@@ -15,20 +15,6 @@ const firebaseConfig = {
 
 //#region dichiarazione costanti 
 
-// Inizializzare Firebase
-const app = firebase.initializeApp(firebaseConfig);
-
-// Inizializzare database
-const db = firebase.database();
-
-// Inizializzare variabili globali legate a firebase
-const auth = firebase.auth();
-var timestamp = Date.now();
-const user = firebase.auth().currentUser;
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
-var uids = [];
-var gameRef;
-var runGame = false;
 
 // Inizializzare costanti di gioco
 var NUM_DINI = 0;
@@ -42,6 +28,12 @@ const START_DISTANCE_DINI = 240;
 const TRANSLATION = 20;
 const HEIGHT_CACTUS = 50;
 const HEIGHT_DINI = 50;
+console.log('game consts initialized')
+
+var fbconfig = {}
+
+
+console.log('firebase variables initialized')
 
 // Inizializzare variabili di gioco
 var grounds;
@@ -66,6 +58,19 @@ var diniColor = [];
 var checkFirst = false;
 //#endregion
 
+// Inizializzare Firebase
+const app = firebase.initializeApp(firebaseConfig);
+// Inizializzare database
+const db = firebase.database();
+// Inizializzare variabili globali legate a firebase
+const auth = firebase.auth();
+var timestamp = Date.now();
+const user = firebase.auth().currentUser;
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+var uids = [];
+var gameRef;
+var runGame = false;
+
 
 /**
  * La funzione setSettingsPhaser, imposta le funzioni principali di phaser e 
@@ -74,7 +79,6 @@ var checkFirst = false;
  * con l'id "gameDiv".
  */
 function setSettingsPhaser() {
-
     var sceneLobby = {
         key: 'sceneLobby',
         preload: preloadGame,
@@ -749,7 +753,6 @@ function saveScore(score, nick) {
  * Inoltre elimina la sessione creata
  */
 function backToHome() {
-
     db.ref('session/' + localStorage.getItem("sessionId")).remove();
-    window.open("./../GUI/login.html", "_self");
+    window.open("./../player/login.html", "_self");
 }
