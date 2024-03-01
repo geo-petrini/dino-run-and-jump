@@ -86,23 +86,17 @@
     function getFullUrl(relativeUrl) {
 
         // Split the hostname into parts
-        var hostnameParts = window.location.hostname.split('.');
-        var url = relativeUrl;
-        // Check if there is a subdomain, eg: http://app.domain.org/relativepath
-        if (hostnameParts.length > 1) {
-            var subdomain = hostnameParts[0];
-            url = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + '/' + relativeUrl;
-        } else {
-            // If not a subdomain, try to infer the subfolder dynamically, eg: http://domain.org/app/relativepath
-            var pathArray = window.location.pathname.split('/');
-            var basePath = (pathArray.length > 1) ? '/' + pathArray[1] : '';
+        // var hostnameParts = window.location.hostname.split('.');
 
-            url = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + basePath + '/' + relativeUrl;
-        }
+        // try to infer the subfolder dynamically, eg: http://domain.org/app/relativepath
+        var pathArray = window.location.pathname.split('/');
+        var basePath = (pathArray.length > 2) ? '/' + pathArray[-2] : '';
+        var url = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + (pathArray.length > 2 ? '/' + pathArray[pathArray.length - 2] : '') + '/' + relativeUrl;
+
         console.log(url);
         return url;
     }
-    
+
     const qrCode = new QRCodeStyling({
         width: 236,
         height: 236,
