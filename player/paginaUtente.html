@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
@@ -10,40 +9,52 @@
     <meta name="author" content="Nadia Fasani">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="../css/bootstrap.css" rel="stylesheet">
-    <script src="../js/bootstrap.bundle.min.js"></script>
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
     <script src="https://code.iconify.design/2/2.1.2/iconify.min.js"></script>
 
-    <script src="../js/index.js"></script>
+    <script src="../static/js/index.js"></script>
 
-    <style>
+    <!-- <style>
         a {
             text-decoration: none;
         }
-    </style>
+    </style> -->
 
 </head>
 
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col pt-1 pb-5 pt-2">
-                <span class="iconify" data-icon="bx:home" data-width="25" data-height="25" onclick="window.location.href='login.html'"></span>
-                <span class="iconify" data-icon="bx:bxs-user" data-width="25" data-height="25" onclick="window.location.href='paginaUtente.html'"></span>
+            <div class="col" id="user_menu">
+                <span class="iconify" data-icon="bx:home" data-width="25" data-height="25"
+                    onclick="window.location.href='login.html'"></span>
+                <span class="iconify" data-icon="bx:bxs-user" data-width="25" data-height="25"
+                    onclick="window.location.href='paginaUtente.html'"></span>
                 <span id="user"></span>
                 <span class="iconify" data-icon="bx:medal" data-width="25" data-height="25"></span>
                 <span id="best_score"></span>
             </div>
         </div>
-        <div class="row pt-5">
+        <div class="row">
             <div class="col">
+                <div class="btn-group w-100 mt-5" role="group">
+                    <button type="button" class="btn btn-outline-primary"><a href="bacheca.html">Bacheca</a></button>
+                    <button type="button" class="btn btn-outline-primary"><a href="personalizzaDino.html">Personalizza</a></button>
+                </div>
             </div>
-            <div class="col-9 pt-2">
-                <svg id="svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0, 0, 400,426.13861386138615">
+        </div>
+        <div class="row">
+            <div class="col h-50">
+                <svg id="svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%"
+                    viewBox="0, 0, 400,426.13861386138615">
                     <g id="dino" style="fill: #fff;">
                         <path id="path0" d="M221.848 7.147 C 221.664 17.262,222.328 16.634,211.824 16.634 C 203.741 16.634,202.745 16.789,202.008 18.166 C 201.463 19.185,201.188
                         40.526,201.188 81.863 C 201.188 116.054,200.972 144.593,200.707 145.282 C 200.304 146.334,198.603 146.535,190.099 146.535 C 178.228 146.535,179.010
@@ -68,13 +79,6 @@
                         </path>
                     </g>
                 </svg>
-
-                <div class="btn-group w-100 mt-5" role="group" aria-label="Basic outlined example">
-                    <button type="button" class="btn btn-outline-primary"><a href="bacheca.html">Bacheca</a></button>
-                    <button type="button" class="btn btn-outline-primary"><a href="personalizzaDino.html">Personalizza</a></button>
-                </div>
-            </div>
-            <div class="col ">
             </div>
         </div>
     </div>

@@ -1,23 +1,14 @@
-// Configurazioni di Firebase
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-
     apiKey: "AIzaSyApE5ebUj8KaGFopZyUJpeRM0VlpHsQLDc",
-
     authDomain: "dino-run-and-jump-d4065.firebaseapp.com",
-
     databaseURL: "https://dino-run-and-jump-d4065-default-rtdb.europe-west1.firebasedatabase.app",
-
     projectId: "dino-run-and-jump-d4065",
-
     storageBucket: "dino-run-and-jump-d4065.appspot.com",
-
     messagingSenderId: "205261962038",
-
     appId: "1:205261962038:web:3d516a8a4080aa65b61197",
-
     measurementId: "G-GTFGZJF3QY"
-
-};
+  };
 
 
 // Inizializzare Firebase
