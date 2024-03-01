@@ -85,12 +85,13 @@
 </body>
 
 <script type="text/javascript">
-
+    var relativeUrl = "player/login.html"
+    var url = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + '/' + relativeUrl;
     const qrCode = new QRCodeStyling({
         width: 236,
         height: 236,
         type: "svg",
-        data: "player/login.html",
+        data: url,
         image: "game/img/ChromeDino.png",
         imageOptions: {
             hideBackgroundDots: true,
