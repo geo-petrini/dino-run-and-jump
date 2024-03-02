@@ -45,6 +45,8 @@ function writeMedals() {
  * La funzione connectToGame prende il codice della partita inserita dall'utente e se esiste lo aggiunge alla partita.
  * Ogni partita può avere al massimo 10 giocatori connessi.
  */
+
+// TODO replace origin with event
 function connectToGame(origin) {
     code = document.getElementById("code").value;
     localStorage.setItem('code', code);
@@ -63,6 +65,7 @@ function connectToGame(origin) {
     if (childNum < 11 && childNum != null && childNum != undefined) {
         if (firebase.auth().currentUser == null) {
             generateGuestId();
+            console.log(`connecting user with guest id to db and session ${code}`)
             db.ref('session/').once('value', function (snapshot) {
                 snapshot.forEach(function (childSnapshot) {
                     if (code == childSnapshot.key) {
@@ -73,12 +76,15 @@ function connectToGame(origin) {
                             score: 0,
                             dino_color: "0x000",
                         });
+                        localStorage.setItem("sessionId", code);
                         window.open(destination, "_self");
                     }
                 });
             });
+            console.log( `session ${code} not found in db with guest user`)
         } else {
             id = firebase.auth().currentUser.uid;
+            console.log(`connecting user ${id} to db and session ${code}`)
             db.ref('session/').once('value', function (snapshot) {
                 snapshot.forEach(function (childSnapshot) {
                     if (code == childSnapshot.key) {
@@ -88,10 +94,12 @@ function connectToGame(origin) {
                             is_touchingDown: false,
                             score: 0,
                         });
+                        localStorage.setItem("sessionId", code);
                         window.open(destination, "_self");
                     }
                 });
             });
+            console.log( `session ${code} not found in db with logged user`)
         }
     } else if (childNum >= 10) {
         alert("Troppi giocatori (numero massimo: 10)");
@@ -220,6 +228,7 @@ function openUserInformation() {
 /**
  * La funzione generateSession genera un numero a 8 cifre randomico per identificare univocamente le sessioni.
  */
+// TODO chk in db se la sessione esiste prima di salvarla
 function generateSession() {
     id = Math.floor(100000 + Math.random() * 900000);
     localStorage.setItem("sessionId", id);
