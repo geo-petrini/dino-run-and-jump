@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>ChromeDino</title>
+    <!-- <link rel="icon" href="D:\Scuola\I3\Mod 306-Progeti\ChromeDinoHotseat\favico\i1agromanfav.ico" type="image/x-icon"> -->
+    <meta cahrset="UTF-8">
+    <meta name="description" content="file base">
+    <meta name="keywords" contenent="HTML,CSS,XML,JavaScript">
+    <meta name="author" content="Manuel Grosso">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--data creazione 07.10.21-->
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+
+    <script src="https://code.iconify.design/2/2.1.2/iconify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        .table-image:td {
+            vertical-align: middle;
+        }
+    </style>
+
+    <script src="../static/js/phaser.js"></script>
+    <script src="../static/js/phaser-arcade-physics.js"></script>
+    <!-- TODO load firebase from index and integrate with game -->
+    <script src="../static/js/index.js"></script>
+    <script src="../static/js/game.js"></script>
+    <script src="../static/js/medaglie.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="#!">Dino Run And Jump</a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 ">
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="../index.html">Home</a></li>
+            </ul>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 ">
+                    <li class="nav-item">
+                        <div id="sessionId" class="btn disabled" aria-disabled="true"></div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-primary" data-toggle="modal" data-target="#connectModal"></span>Connect to session</a>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-success" onclick="startClick()" id="start-game">START</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid" id="game">
+        <div class="row">
+            <div id='gameDiv'></div>
+        </div>
+    </div>
+
+    <div class="container-fluid" id="leaderboard" style="display: none;">
+        <div class="row pt-2">
+            <div class="col">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nickname</th>
+                            <th scope="col">Score</th>
+                            <th scope="col">Medal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leader_table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- connect to session modal -->
+    <div class="modal fade" id="connectModal" tabindex="-1" aria-labelledby="connect to session" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Connection</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="form-group row">
+                        <label for="email" class="col-sm-2 col-form-label">Session</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="code" placeholder="code">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-outline-primary" data-dismiss="modal" onclick="connectToGame('arena')">Connect</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    function startClick() {
+        document.getElementById('start-game').setAttribute('onclick', 'location.reload();');
+
+        // Change button text to 'RESTART'
+        document.getElementById('start-game').innerText = 'RESTART';
+
+        // call the phaser startGame function
+        startGame()
+    }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        setSettingsPhaser();
+    });
+</script>
+
+</html>

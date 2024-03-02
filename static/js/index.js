@@ -45,9 +45,18 @@ function writeMedals() {
  * La funzione connectToGame prende il codice della partita inserita dall'utente e se esiste lo aggiunge alla partita.
  * Ogni partita può avere al massimo 10 giocatori connessi.
  */
-function connectToGame() {
+function connectToGame(origin) {
     code = document.getElementById("code").value;
     localStorage.setItem('code', code);
+
+    let destination = ''
+    if (origin == 'player'){
+        destination = 'controller.html'
+    }
+    if (origin == 'arena'){
+        destination = 'arena.html'
+    }    
+
     db.ref('session/' + code + "/").once('value', function (snapshot) {
         childNum = snapshot.numChildren();
     });
@@ -64,7 +73,7 @@ function connectToGame() {
                             score: 0,
                             dino_color: "0x000",
                         });
-                        window.open("controller.html", "_self");
+                        window.open(destination, "_self");
                     }
                 });
             });
@@ -79,7 +88,7 @@ function connectToGame() {
                             is_touchingDown: false,
                             score: 0,
                         });
-                        window.open("controller.html", "_self");
+                        window.open(destination, "_self");
                     }
                 });
             });
@@ -218,7 +227,7 @@ function generateSession() {
         session_id: id,
     })
         .then(() => {
-            window.open("../Game/index.html", "_self");
+            window.open("arena.html", "_self");
         });
 }
 
