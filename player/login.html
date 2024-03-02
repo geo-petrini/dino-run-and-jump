@@ -23,38 +23,42 @@
     <script src="../static/js/index.js"></script>
 
 </head>
-
+<!-- TODO bring medals and dino customization in this page -->
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
         <div class="container px-4 px-lg-5">
             <a class="navbar-brand" href="#!">Dino Run And Jump</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
-                    class="navbar-toggler-icon"></span></button>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item">
-                    <button type="button" class="btn btn-outline-primary d-none" id="btn_account" onclick="openUserInformation()">
-                        <span class="iconify" data-icon="bx:bx-user-circle" data-width="16" data-height="16"></span>
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-warning d-none" id="btn_logout" onclick="logoutUser()">
-                        <span class="iconify" data-icon="bx:bx-log-out"></span> Logout
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-primary" id="btn_login" data-toggle="modal" data-target="#logInModal">
-                        <span class="iconify" data-icon="bx:bx-log-in"></span> Login
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <div id="div_signin">
-                        <span class="pt-2 text-primary fw-bold mx-1">or</span>
-                        <a class="btn btn-outline-primary" data-toggle="modal" data-target="#signInModal"></span>Sign up</a>
-                        <span class="pt-2 text-danger" id="singIn_error"></span>
-                    </div>
-                </li>
-            </ul>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 ">
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-outline-primary d-none" id="btn_account" onclick="openUserInformation()">
+                            <span class="iconify" data-icon="bx:bx-user-circle" data-width="16" data-height="16"></span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-warning d-none" id="btn_logout" onclick="logoutUser()">
+                            <span class="iconify" data-icon="bx:bx-log-out"></span> Logout
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-primary" id="btn_login" data-toggle="modal" data-target="#logInModal">
+                            <span class="iconify" data-icon="bx:bx-log-in"></span> Login
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <div id="div_signin">
+                            <span class="pt-2 text-primary fw-bold mx-1">or</span>
+                            <a class="btn btn-outline-primary" data-toggle="modal" data-target="#signInModal"></span>Sign up</a>
+                            <span class="pt-2 text-danger" id="singIn_error"></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
         </div>
     </nav>
 
