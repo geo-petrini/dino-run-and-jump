@@ -11,7 +11,7 @@ function getOS() {
     if (iosPlatforms.indexOf(platform) !== -1) {
         os = 'iOS';
     }
-    document.getElementById("os").innerHTML = "Dispositivi IOS non supportati. <br>Usa il tasto Jump";
+    document.getElementById("messages").innerHTML = "Dispositivi IOS non supportati. <br>Usa il tasto Jump";
 }
 
 window.addEventListener("devicemotion", handleMotion, true);
@@ -34,8 +34,11 @@ function requestPermission() {
                     window.addEventListener("devicemotion", (e) => {})
                 }
             })
-            .catch(console.error)
+            .catch(error => {
+                console.error(error);
+                document.getElementById("messages").innerHTML = "Error: " + error.message;
+            });
     } else {
-        alert("DeviceMotionEvent is not defined");
+        document.getElementById("messages").innerHTML = "DeviceMotionEvent is not defined"
     }
 }
