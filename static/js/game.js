@@ -47,7 +47,7 @@ var linesGroup;
 
 var minimumDistance;
 var colliderDini;
-var backgroundSpeed;
+var backgroundSpeed;        //this is the game speed and gets faster as the game progresses by updateDifficulty()
 var score;
 var cactusValidation;
 
@@ -248,7 +248,7 @@ function setStartValues() {
 
     minimumDistance = 260;
     colliderDini = new Array(NUM_DINI);
-    backgroundSpeed = 5;
+    backgroundSpeed = 3;
     score = new Array(NUM_DINI);
     for (var i = 0; i < score.length; i++) {
         score[i] = 0;
