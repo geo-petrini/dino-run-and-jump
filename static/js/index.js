@@ -64,7 +64,7 @@ function connectToGame() {
                             score: 0,
                             dino_color: "0x000",
                         });
-                        window.open("game.html", "_self");
+                        window.open("controller.html", "_self");
                     }
                 });
             });
@@ -79,7 +79,7 @@ function connectToGame() {
                             is_touchingDown: false,
                             score: 0,
                         });
-                        window.open("game.html", "_self");
+                        window.open("controller.html", "_self");
                     }
                 });
             });
@@ -101,7 +101,7 @@ function generateGuestId() {
 
 //#endregion
 
-//#region game.html
+//#region controller.html
 
 /**
  * La funzione jump permette all'utente di far saltare il proprio dino modificando il valore di una variabile su Firebase.
@@ -220,6 +220,10 @@ function generateSession() {
         .then(() => {
             window.open("../Game/index.html", "_self");
         });
+}
+
+function getSessionId(){
+    document.getElementById('sessionId').innerHTML = localStorage.getItem("sessionId");
 }
 
 //#endregion
