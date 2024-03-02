@@ -77,8 +77,13 @@
                     </div>
                 </div>
                 <div class="card">
-                    <button type="button" class="btn btn-outline-primary" onclick="window.location.href='collegamentoPartita.html'"><span
-                            class="iconify" data-icon="bx:bx-link" data-width="100" data-height="100"></span></button>
+                    <!-- <button type="button" class="btn btn-outline-primary" onclick="window.location.href='collegamentoPartita.html'">
+                        <span class="iconify" data-icon="bx:bx-link" data-width="100" data-height="100"></span>
+                    </button> -->
+
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#connectModal">
+                        <span class="iconify" data-icon="bx:bx-link" data-width="100" data-height="100"></span>
+                    </button>                    
                     <div class="card-body">
                         <h5 class="card-title">Connessione</h5>
                         <p class="card-text">Collegati ad una partita</p>
@@ -142,6 +147,30 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="registerNewUser()">Sign up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- connect to session modal -->
+    <div class="modal fade" id="connectModal" tabindex="-1" aria-labelledby="connect to session" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Connection</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="form-group row">
+                        <label for="email" class="col-sm-2 col-form-label">Session</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="code" placeholder="code">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-outline-primary" data-dismiss="modal" onclick="connectToGame('player')">Connect</button>
                 </div>
             </div>
         </div>

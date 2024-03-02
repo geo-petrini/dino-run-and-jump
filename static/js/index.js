@@ -227,7 +227,7 @@ function generateSession() {
         session_id: id,
     })
         .then(() => {
-            window.open("arena.html", "_self");
+            window.open("controller.html", "_self");
         });
 }
 
@@ -389,4 +389,31 @@ function getIsTouchingDown() {
     }
 
     return isTouchingDown;
+}
+
+function copyToClipboard(clicked) {
+    // Ottieni l'ID dell'elemento cliccato
+    var id = clicked.id;
+
+    var textToCopy = document.getElementById(id);
+
+    // Crea un campo di input temporaneo
+    var tempInput = document.createElement('input');
+    tempInput.value = textToCopy.textContent;
+
+    // Aggiungi il campo di input alla pagina
+    document.body.appendChild(tempInput);
+
+    // Seleziona il testo nel campo di input
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999); // Per dispositivi mobili
+
+    // Copia il testo negli appunti
+    document.execCommand('copy');
+
+    // Rimuovi il campo di input temporaneo
+    document.body.removeChild(tempInput);
+
+    // Aggiungi un feedback visivo (opzionale)
+    alert('Testo copiato negli appunti: ' + textToCopy.textContent);
 }
