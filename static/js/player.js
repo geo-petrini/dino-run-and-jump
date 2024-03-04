@@ -47,13 +47,14 @@ function writeMedals() {
  */
 
 // TODO replace origin with event
+// TODO refactor
 function connectToGame(origin) {
     code = document.getElementById("code").value;
     localStorage.setItem('code', code);
 
     let destination = ''
     if (origin == 'player'){
-        destination = 'controller.html'
+        destination = 'player.html'
     }
     if (origin == 'arena'){
         destination = 'arena.html'
@@ -113,7 +114,6 @@ function connectToGame(origin) {
 function generateGuestId() {
     id = "guest_" + Math.floor(100000 + Math.random() * 900000);
     localStorage.setItem('guestId', id);
-    window.open("personalizzaDino.html", "_self");
 }
 
 //#endregion
@@ -123,6 +123,7 @@ function generateGuestId() {
 /**
  * La funzione jump permette all'utente di far saltare il proprio dino modificando il valore di una variabile su Firebase.
  */
+// TODO refactor
 function jump() {
     db.ref('session/' + localStorage.getItem('code')).once('value', function (snapshot) {
         db.ref('session/').once('value', function (snapshot) {
@@ -300,6 +301,7 @@ function saveDinoColor() {
 /**
  * La funzione showUserInformation dopo aver effettuato il login mostra le informazioni dell'utente e le opzioni non visibili ai guest.
  */
+// TODO include guest
 function showUserInformation() {
     document.getElementById('user').innerHTML = firebase.auth().currentUser.email.split("@")[0];
 
@@ -310,22 +312,12 @@ function showUserInformation() {
                 path = path.split("/");
                 path = path[path.length - 1];
                 var c = childSnapshot.val().dino_color.replace("0x", "#");
-                if (path == "paginaUtente.html") {
-                    document.getElementById('best_score').innerHTML = childSnapshot.val().best_score == null ? "" : childSnapshot.val().best_score;
-                    document.getElementById('dino').style.fill = c;
-                } 
-                if (path = "personalizzaDino.html") {
-                    document.getElementById('color_input').value = c;
-                    document.getElementById('dino').style.fill = c;
-                }
+
                 if (path = "player.html") {
                     document.getElementById('color_input').value = c;
                     document.getElementById('dino').style.fill = c;
                 }     
-                if (path = "login.html") {
-                    document.getElementById('color_input').value = c;
-                    document.getElementById('dino').style.fill = c;
-                }                             
+                          
             }
         });
     });
@@ -344,14 +336,13 @@ firebase.auth().onAuthStateChanged((user) => {
         path = path.split("/");
         path = path[path.length - 1];
         //dino-run-and-jump/GUI%20telefono/paginaUtente.html
-        if (path == "login.html") {
+        if (path == "player.html") {
             document.getElementById("btn_logout").classList.remove("d-none");
             document.getElementById("btn_account").classList.remove("d-none");
             document.getElementById("btn_account").innerHTML += user.email.split("@")[0];
             document.getElementById("div_signin").style.display = "none";
             document.getElementById("btn_login").style.display = "none";
-        } else if (path == "paginaUtente.html") {
-            showUserInformation();
+
         } else if (path == "personalizzaDino.html") {
             showUserInformation();
             db.ref('user/').once('value', function (snapshot) {

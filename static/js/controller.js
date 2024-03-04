@@ -1,5 +1,11 @@
-function blockInput() {
-    document.getElementById("btn_jump").disabled = !document.getElementById("btn_jump").disabled;
+function toggleBlockInput() {
+    
+    if (document.getElementById('checkboxBlockInput').checked){
+        document.getElementById("btn_jump").disabled = true
+    }else{
+        document.getElementById("btn_jump").disabled = false
+    }
+    // document.getElementById("btn_jump").disabled = !document.getElementById("btn_jump").disabled;
 }
 
 function getOS() {
@@ -12,6 +18,8 @@ function getOS() {
         os = 'iOS';
     }
     document.getElementById("messages").innerHTML = "Dispositivi IOS non supportati. <br>Usa il tasto Jump";
+    $('#messages').alert()
+
 }
 
 window.addEventListener("devicemotion", handleMotion, true);
@@ -26,7 +34,7 @@ function handleMotion(event) {
 }
 
 function requestPermission() {
-    console.log("permession executed");
+    console.log("requesting DeviceMotionEvent premission");
     if (typeof(DeviceMotionEvent) !== "undefined" && typeof(DeviceMotionEvent.requestPermission) === "function") {
         DeviceMotionEvent.requestPermission()
             .then(response => {
@@ -39,6 +47,7 @@ function requestPermission() {
                 document.getElementById("messages").innerHTML = "Error: " + error.message;
             });
     } else {
-        document.getElementById("messages").innerHTML = "DeviceMotionEvent is not defined"
+        console.error("DeviceMotionEvent is not defined");
+        displayAlert("DeviceMotionEvent is not defined")
     }
 }
