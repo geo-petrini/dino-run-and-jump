@@ -160,9 +160,9 @@ function jump() {
  * La funzione registerNewUser prende nickname e password inseriti dall'utente e con Firebase l'account viene creato.
  * Se Firebase restituisce un errore viene mostrato all'utente.
  */
-function registerNewUser() {
-    var password = document.getElementById("password_signIn").value;
-    var nickname = document.getElementById("nickname_signIn").value;
+function registerNewUser(nickname, password) {
+    // var password = document.getElementById("password_signIn").value;
+    // var nickname = document.getElementById("nickname_signIn").value;
     var email = nickname + "@dino.ch";
 
     // creare nuovo account
@@ -181,27 +181,28 @@ function registerNewUser() {
 /**
  * La funzione loginUser permette all'utente di autenticarsi con nickname e password.
  */
-function loginUser() {
-    var password = document.getElementById("password_logIn").value;
-    var nickname = document.getElementById("nickname_logIn").value;
+function loginUser(nickname, password) {
+    // var password = document.getElementById("password_logIn").value;
+    // var nickname = document.getElementById("nickname_logIn").value;
     var email = nickname + "@dino.ch";
 
     auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             nickname = firebase.auth().currentUser.email.split("@")[0];
 
-            document.getElementById("btn_logout").classList.remove("d-none");
-            document.getElementById("btn_account").classList.remove("d-none");
-            document.getElementById("btn_account").innerHTML == nickname;
-            document.getElementById("div_signin").style.display = "none";
-            document.getElementById("btn_login").style.display = "none";
+            // document.getElementById("btn_logout").classList.remove("d-none");
+            // document.getElementById("btn_account").classList.remove("d-none");
+            // document.getElementById("btn_account").innerHTML == nickname;
+            // document.getElementById("div_signin").style.display = "none";
+            // document.getElementById("btn_login").style.display = "none";
 
-            localStorage.setItem('guestId', null);
+            // localStorage.setItem('guestId', null);
         })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            document.getElementById('singIn_error').innerHTML = error.message;
+            // document.getElementById('singIn_error').innerHTML = error.message;
+            displayAlert(error.message);
         });
 }
 
@@ -243,6 +244,13 @@ function generateSession() {
 
 function getSessionId(){
     document.getElementById('sessionId').innerHTML = localStorage.getItem("sessionId");
+}
+
+// TODO implement check
+function chkSessionId(code){
+    // db.ref('session/' + code + "/").once('value', function (snapshot) {
+    //     childNum = snapshot.numChildren();
+    // });
 }
 
 //#endregion

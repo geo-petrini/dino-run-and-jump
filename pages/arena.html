@@ -37,10 +37,7 @@
 <body>
     <nav class="navbar navbar-expand-md navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#!">Dino Run And Jump</a>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 ">
-                <li class="nav-item"><a class="nav-link active" aria-current="page" href="../index.html">Home</a></li>
-            </ul>
+            <a class="navbar-brand" href="../index.html"><img src="../static/img/dino_40x40.png" width="40" height="40" alt="Dino Jump And Run"></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
                 aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -48,7 +45,8 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 ">
                     <li class="nav-item">
-                        <div id="sessionId" class="btn btn-outline-dark" onclick="copyToClipboard(this)">NOT CONNECTED</div>
+                        <div id="sessionId" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="bottom"
+                            title="Click to copy session id" onclick="copyToClipboard(this)">NOT CONNECTED</div>
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-outline-primary" data-toggle="modal" data-target="#connectModal"></span>Connect to session</a>
@@ -111,6 +109,14 @@
     </div>
 </body>
 
+<script>
+    $(document).ready(function () {
+        getSessionId();
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    });
+</script>
 <script type="text/javascript">
     function startClick() {
         document.getElementById('start-game').setAttribute('onclick', 'location.reload();');
@@ -123,15 +129,11 @@
     }
 </script>
 <script>
-    $(document).ready(function () {
-        getSessionId();
-    });
-</script>
-<script>
     document.addEventListener('DOMContentLoaded', function () {
         setSettingsPhaser();
     });
 </script>
 
 <!-- TODO periodically check if the session id in local storage is valid -->
+
 </html>

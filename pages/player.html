@@ -11,8 +11,7 @@
 
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="../static/js/bootstrap.bundle.min.js"></script>
     <link href="../static/css/switch.css" rel="stylesheet">
 
@@ -32,12 +31,18 @@
 <body>
     <nav class="navbar navbar-expand-md navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="#!">Dino Run And Jump</a>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 ">
-                <li class="nav-item"><a class="nav-link active" aria-current="page" href="../index.html">Home</a></li>
-            </ul>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="../index.html"><img src="../static/img/dino_40x40.png" width="40" height="40" alt="Dino Jump And Run"></a>
+            <div class="navbar">
+                <button type="button" class="btn btn-outline-primary d-none" id="btn_account">
+                    <span class="iconify" data-icon="bx:bx-user-circle" data-width="16" data-height="16"></span>
+                </button>
+                <div class="nav-item">
+                    <div id="sessionId" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="bottom"
+                    title="Click to copy session id" onclick="copyToClipboard(this)">NOT CONNECTED</div>
+                </div>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+                aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
@@ -54,15 +59,13 @@
                         </button>
                     </li>
                     <li class="nav-item">
-                        <button type="button" class="btn btn-primary" id="btn_login" data-toggle="modal"
-                            data-target="#logInModal">
+                        <button type="button" class="btn btn-primary" id="btn_login" data-toggle="modal" data-target="#logInModal">
                             <span class="iconify" data-icon="bx:bx-log-in"></span> Login
                         </button>
                     </li>
                     <li class="nav-item">
                         <div id="div_signin">
-                            <a class="btn btn-outline-primary" data-toggle="modal"
-                                data-target="#signInModal"></span>Sign up</a>
+                            <a class="btn btn-outline-primary" data-toggle="modal" data-target="#signInModal"></span>Sign up</a>
                             <span class="pt-2 text-danger" id="singIn_error"></span>
                         </div>
                     </li>
@@ -72,17 +75,15 @@
         </div>
     </nav>
 
-    <button type="button" class="btn btn-outline-primary d-none" id="btn_account">
-        <span class="iconify" data-icon="bx:bx-user-circle" data-width="16" data-height="16"></span>
-    </button>
+
 
     <div class="container px-4 px-lg-5 mt-5">
 
         <div id="game-buttons" class="row justify-content-center">
             <div class="card-deck">
                 <div class="card">
-                    <button type="button" class="btn btn-outline-success" onclick="generateSession()"><span
-                            class="iconify" data-icon="bx:bx-plus" data-width="100" data-height="100"></span></button>
+                    <button type="button" class="btn btn-outline-success" onclick="generateSession()"><span class="iconify" data-icon="bx:bx-plus"
+                            data-width="100" data-height="100"></span></button>
                     <div class="card-body">
                         <h5 class="card-title">Crea partita</h5>
                         <p class="card-text">Avvia una nuova partita da condividere con altri giocatori o da giocare da
@@ -90,8 +91,7 @@
                     </div>
                 </div>
                 <div class="card">
-                    <button type="button" class="btn btn-outline-primary" data-toggle="modal"
-                        data-target="#connectModal">
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#connectModal">
                         <span class="iconify" data-icon="bx:bx-link" data-width="100" data-height="100"></span>
                     </button>
                     <div class="card-body">
@@ -100,8 +100,7 @@
                     </div>
                 </div>
                 <div class="card">
-                    <button type="button" class="btn btn-outline-warning" data-toggle="modal"
-                        data-target="#controllerModal">
+                    <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#controllerModal">
                         <span class="iconify" data-icon="mdi:jump" data-width="100" data-height="100"></span>
                     </button>
                     <div class="card-body">
@@ -154,18 +153,6 @@
             <div class="col">
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-            </div>
-            <div class="col-9 pt-5 text-center">
-                <div class="col">
-                    <p>Session code</p>
-                    <p id="sessionId" style="font-size:xx-large;"></p>
-                </div>
-            </div>
-            <div class="col">
-            </div>
-        </div>        
     </div>
 
 
@@ -176,8 +163,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Login</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body text-center">
                     <div class="form-group row">
@@ -195,7 +181,9 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-outline-primary" data-dismiss="modal" onclick="loginUser()">Sign in</button>
+                    <button class="btn btn-outline-primary" data-dismiss="modal"
+                        onclick="loginUser(document.getElementById('nickname_signIn').value, document.getElementById('password_signIn').value)">Sign
+                        in</button>
                 </div>
             </div>
         </div>
@@ -207,8 +195,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Sign Up</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body text-center">
                     <div class="form-group row">
@@ -225,7 +212,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="registerNewUser()">Sign
+                    <button class="btn btn-outline-primary" data-bs-dismiss="modal"
+                        onclick="registerNewUser(document.getElementById('nickname_signIn').value, document.getElementById('password_signIn').value)">Sign
                         up</button>
                 </div>
             </div>
@@ -238,8 +226,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Connection</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body text-center">
                     <div class="form-group row">
@@ -251,8 +238,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-outline-primary" data-dismiss="modal"
-                        onclick="connectToGame('player')">Connect</button>
+                    <button class="btn btn-outline-primary" data-dismiss="modal" onclick="connectToGame('player')">Connect</button>
                 </div>
             </div>
         </div>
@@ -263,7 +249,8 @@
         <div class="modal-dialog modal-fullscreen modal-xl">
             <div class="modal-content">
                 <div class="modal-body text-center">
-                    <button type="button" class="btn btn-danger pt-5 pb-5 shadow w-100" style="min-height: 66vh;" id="btn_jump" onclick="jump()">Jump</button>
+                    <button type="button" class="btn btn-danger pt-5 pb-5 shadow w-100" style="min-height: 66vh;" id="btn_jump"
+                        onclick="jump()">Jump</button>
                 </div>
 
                 <div class="modal-footer">
@@ -274,8 +261,8 @@
                             <span class="slider round"></span>
                         </label>
                         <span>Blocca input</span>
-                    </div>                      
-                    <button class="btn btn-outline-primary" data-dismiss="modal" aria-label="Close">Close</button>                      
+                    </div>
+                    <button class="btn btn-outline-primary" data-dismiss="modal" aria-label="Close">Close</button>
                 </div>
             </div>
         </div>
@@ -287,50 +274,51 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Connection</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body text-center">
                     <div class="form-group row">
                         <label for="color_input" class="col-sm-2 col-form-label">Session</label>
                         <div class="col-sm-10">
-                            <input type="color" class="form-control form-control-color" id="color_input"
-                                oninput="changeDinoColor(this.value)">
+                            <input type="color" class="form-control form-control-color" id="color_input" oninput="changeDinoColor(this.value)">
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-outline-primary" data-dismiss="modal"
-                        onclick="saveDinoColor()">Salva</button>
+                    <button class="btn btn-outline-primary" data-dismiss="modal" onclick="saveDinoColor()">Salva</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // $(document).ready(function () {
-            
-        // });
+        $(document).ready(function () {
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+        });
 
         // writeMedals();
     </script>
     <script type="text/javascript">
-        function updateUserInfo(){
+        function updateUserInfo() {
 
             let guestId = localStorage.getItem('guestId');
-            let userId = localStorage.getItem("userUid");
+            let userId = firebase.auth().currentUser;
             if (guestId != null || userId != null) {
 
                 document.getElementById("div_signin").style.display = "none";
-                document.getElementById("btn_login").style.display = "none";
-                document.getElementById("btn_logout").classList.remove("d-none");
                 document.getElementById("btn_account").classList.remove("d-none");
                 if (userId != null) {
-                    user = firebase.auth().currentUser;
+                    console.log(`userId: ${userId}`)
+
+                    document.getElementById("btn_login").style.display = "none";
+                    document.getElementById("btn_logout").classList.remove("d-none");
                     document.getElementById("btn_account").innerHTML += user.email.split("@")[0];
                 }
                 if (guestId != null) {
+                    // console.log(`guestid: ${guestId}`)
                     document.getElementById("btn_account").innerHTML = guestId;
                 }
             }
@@ -345,7 +333,7 @@
             getSessionId();
             // updateAlertMessages();
         }, 1500);
-    </script>    
+    </script>
 </body>
 
 </html>
