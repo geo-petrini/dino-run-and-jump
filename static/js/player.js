@@ -154,7 +154,7 @@ function jump() {
 
 //#endregion
 
-//#region login.html
+//#region player.html
 
 /**
  * La funzione registerNewUser prende nickname e password inseriti dall'utente e con Firebase l'account viene creato.

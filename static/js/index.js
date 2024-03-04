@@ -153,7 +153,7 @@ function jump() {
 
 //#endregion
 
-//#region login.html
+//#region player.html
 
 /**
  * La funzione registerNewUser prende nickname e password inseriti dall'utente e con Firebase l'account viene creato.
@@ -322,7 +322,7 @@ function showUserInformation() {
                     document.getElementById('color_input').value = c;
                     document.getElementById('dino').style.fill = c;
                 }     
-                if (path = "login.html") {
+                if (path = "player.html") {
                     document.getElementById('color_input').value = c;
                     document.getElementById('dino').style.fill = c;
                 }                             
@@ -344,7 +344,7 @@ firebase.auth().onAuthStateChanged((user) => {
         path = path.split("/");
         path = path[path.length - 1];
         //dino-run-and-jump/GUI%20telefono/paginaUtente.html
-        if (path == "login.html") {
+        if (path == "player.html") {
             document.getElementById("btn_logout").classList.remove("d-none");
             document.getElementById("btn_account").classList.remove("d-none");
             document.getElementById("btn_account").innerHTML += user.email.split("@")[0];

@@ -749,10 +749,10 @@ function saveScore(score, nick) {
 }
 
 /**
- * Il metodo backToHome carica la pagina iniziale di login (login.html).
+ * Il metodo backToHome carica la pagina iniziale di login (player.html).
  * Inoltre elimina la sessione creata
  */
 function backToHome() {
     db.ref('session/' + localStorage.getItem("sessionId")).remove();
-    window.open("login.html", "_self");
+    window.open("player.html", "_self");
 }
