@@ -179,51 +179,24 @@ function generateGuestId() {
 // TODO refactor
 function jump() {
     db.ref(`session/${localStorage.getItem('code')}`).once('value')
-        .then(function (dataSnapshot) {
-            console.log(`session: ${localStorage.getItem('code')}, dataSnapshot: ${JSON.stringify(dataSnapshot.exportVal())}`)
+        .then(function (sessionData) {
+            // console.log(`session: ${localStorage.getItem('code')}, dataSnapshot: ${JSON.stringify(sessionData.exportVal())}`)
+            sessionData.forEach(function (sessionPlayer) {
+                //loop all child nodes of the current session, some nodes like "session_id" are not players but we search for one
+                // console.log(`session: ${localStorage.getItem('code')}, sessionPlayer.key: ${JSON.stringify(sessionPlayer.key)}`)
+                const playerId = getPlayerId()
+                if (sessionPlayer.key == playerId) {
+
+                    const playerRef = db.ref(`session/${localStorage.getItem('code')}/${playerId}`)
+                    // console.log(`session: ${localStorage.getItem('code')}, updating playerRef: ${JSON.stringify(playerRef.toJSON())} of type ${typeof playerRef}`)
+                    playerRef.update({ is_jumping: true }).catch((error) => {
+                        console.log(`error jumping player ${playerId}`, error)
+                        displayAlert(`error jumping player ${playerId}: ${error}`)
+                    });
+                }
+            })
         })
 }
-
-// function jump() {
-//     db.ref(`session/${localStorage.getItem('code')}`).once('value', function (snapshot) {
-//         db.ref('session/').once('value', function (snapshot) {
-//             console.log(`processing session: ${snapshot}`)
-//             snapshot.forEach(function (childSnapshot) {
-//                 childSnapshot.forEach(function (childChildSnapshot) {
-//                     // console.log("jumpOut");
-
-//                     let playerId = null
-//                     // if (localStorage.getItem('guestId') == "null" || localStorage.getItem('guestId') == null ) {
-
-//                     if (localStorage.getItem('guestId') != null
-//                         && firebase.auth().currentUser != null
-//                         && firebase.auth().currentUser.uid != null
-//                         && childChildSnapshot.key == firebase.auth().currentUser.uid) {
-//                         // player is this registered user
-//                         playerId = firebase.auth().currentUser.uid
-//                     } else if (childChildSnapshot.key == localStorage.getItem('guestId')) {
-//                         // player is a guest
-//                         playerId = localStorage.getItem('guestId')
-//                     }
-
-//                     const playerRef = db.ref(`session/${childSnapshot.key}/${playerId}`)
-
-//                     playerRef.update({
-//                         is_jumping: true,
-//                         score: childChildSnapshot.val().score,
-//                         is_alive: childChildSnapshot.val().is_alive,
-//                         // dino_color: childChildSnapshot.val().dino_color, // check if update dino_color for guests is necessary (not needed for registered players)
-//                     }).catch((error) => {
-//                         console.log(`error jumping player ${playerId}`, error)
-//                         displayAlert(`error jumping player ${playerId}: ${error}`)
-//                     });
-
-//                 });
-//             });
-//         });
-//     });
-// }
-
 //#endregion
 
 //#region player.html
