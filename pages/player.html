@@ -33,9 +33,10 @@
         <div class="container">
             <a class="navbar-brand" href="../index.html"><img src="../static/img/dino_40x40.png" width="40" height="40" alt="Dino Jump And Run"></a>
             <div class="navbar">
-                <button type="button" class="btn btn-outline-primary d-none" id="btn_account">
-                    <span class="iconify" data-icon="bx:bx-user-circle" data-width="16" data-height="16"></span>
-                </button>
+                <div class="btn-group">
+                    <div class="btn btn-outline-primary disabled"><span class="iconify" data-icon="bx:bx-user-circle" data-width="16" data-height="16"></span></div>
+                    <button type="button" class="btn btn-outline-primary d-none" id="btn_account"></button>
+                </div>
                 <div class="nav-item">
                     <div id="sessionId" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="bottom"
                     title="Click to copy session id" onclick="copyToClipboard(this)">NOT CONNECTED</div>
@@ -182,7 +183,7 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-outline-primary" data-dismiss="modal"
-                        onclick="loginUser(document.getElementById('nickname_signIn').value, document.getElementById('password_signIn').value)">Sign
+                        onclick="loginUser(document.getElementById('nickname_logIn').value, document.getElementById('password_logIn').value)">Sign
                         in</button>
                 </div>
             </div>
@@ -305,17 +306,15 @@
         function updateUserInfo() {
 
             let guestId = localStorage.getItem('guestId');
-            let userId = firebase.auth().currentUser;
-            if (guestId != null || userId != null) {
+            let user = firebase.auth().currentUser;
+            if (guestId != null || user != null) {
 
                 document.getElementById("div_signin").style.display = "none";
                 document.getElementById("btn_account").classList.remove("d-none");
-                if (userId != null) {
-                    console.log(`userId: ${userId}`)
-
+                if (user != null) {
                     document.getElementById("btn_login").style.display = "none";
                     document.getElementById("btn_logout").classList.remove("d-none");
-                    document.getElementById("btn_account").innerHTML += user.email.split("@")[0];
+                    document.getElementById("btn_account").innerHTML = user.email.split("@")[0];
                 }
                 if (guestId != null) {
                     // console.log(`guestid: ${guestId}`)
@@ -324,14 +323,9 @@
             }
         }
 
-        // function updateAlertMessages(){
-
-        // }
-
         setInterval(() => {
             updateUserInfo();
             getSessionId();
-            // updateAlertMessages();
         }, 1500);
     </script>
 </body>

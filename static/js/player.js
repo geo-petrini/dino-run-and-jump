@@ -8,7 +8,7 @@ const firebaseConfig = {
     messagingSenderId: "205261962038",
     appId: "1:205261962038:web:3d516a8a4080aa65b61197",
     measurementId: "G-GTFGZJF3QY"
-  };
+};
 
 
 // Inizializzare Firebase
@@ -53,12 +53,12 @@ function connectToGame(origin) {
     localStorage.setItem('code', code);
 
     let destination = ''
-    if (origin == 'player'){
+    if (origin == 'player') {
         destination = 'player.html'
     }
-    if (origin == 'arena'){
+    if (origin == 'arena') {
         destination = 'arena.html'
-    }    
+    }
 
     db.ref('session/' + code + "/").once('value', function (snapshot) {
         childNum = snapshot.numChildren();
@@ -82,7 +82,7 @@ function connectToGame(origin) {
                     }
                 });
             });
-            console.log( `session ${code} not found in db with guest user`)
+            console.log(`session ${code} not found in db with guest user`)
         } else {
             id = firebase.auth().currentUser.uid;
             console.log(`connecting user ${id} to db and session ${code}`)
@@ -100,7 +100,7 @@ function connectToGame(origin) {
                     }
                 });
             });
-            console.log( `session ${code} not found in db with logged user`)
+            console.log(`session ${code} not found in db with logged user`)
         }
     } else if (childNum >= 10) {
         alert("Troppi giocatori (numero massimo: 10)");
@@ -185,6 +185,7 @@ function loginUser(nickname, password) {
     // var password = document.getElementById("password_logIn").value;
     // var nickname = document.getElementById("nickname_logIn").value;
     var email = nickname + "@dino.ch";
+    console.log(`trying to log in with ${email}`)
 
     auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
@@ -242,15 +243,27 @@ function generateSession() {
         });
 }
 
-function getSessionId(){
+function getSessionId() {
+    chkSessionId()
     document.getElementById('sessionId').innerHTML = localStorage.getItem("sessionId");
 }
 
 // TODO implement check
-function chkSessionId(code){
-    // db.ref('session/' + code + "/").once('value', function (snapshot) {
-    //     childNum = snapshot.numChildren();
-    // });
+function chkSessionId(code) {
+    if (code != null) {
+        sessionRef = db.ref(`session/${code}/`)
+
+        sessionRef.get().then((doc) => {
+            if (doc.exists){
+                console.log(`session with code ${code} exists`)
+            } else {
+                console.log(`session with code ${code} does not exists`)
+                localStorage.removeItem("sessionId")
+            }
+        }).catch((error) => {
+            console.log(`error getting document for session ${code}`, error)
+        })
+    }
 }
 
 //#endregion
@@ -324,8 +337,8 @@ function showUserInformation() {
                 if (path = "player.html") {
                     document.getElementById('color_input').value = c;
                     document.getElementById('dino').style.fill = c;
-                }     
-                          
+                }
+
             }
         });
     });

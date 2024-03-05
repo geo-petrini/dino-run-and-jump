@@ -4,13 +4,13 @@ function chkAlertContainerExists() {
     if (document.getElementById("alerts") != null) {
         return true
     } else {
-        console.log('alert navbar not present')
+        // console.log('alert navbar not present')
         return false
     }
 }
 
 function addAlertContainer() {
-    console.log('adding alert container')
+    // console.log('adding alert container')
     let ct = `
     <div id="alerts" class="fixed-bottom" style="z-index: 9000;position: fixed;">
         <ul id="alerts-list" class="list-group list-group-flush"></ul>
