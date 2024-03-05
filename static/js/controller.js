@@ -44,7 +44,7 @@ function requestPermission() {
             })
             .catch(error => {
                 console.error(error);
-                document.getElementById("messages").innerHTML = "Error: " + error.message;
+                displayAlert( "Error: " + error.message);
             });
     } else {
         console.error("DeviceMotionEvent is not defined");

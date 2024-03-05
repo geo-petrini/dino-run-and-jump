@@ -1,3 +1,4 @@
+const MAX_PLAYERS = 10
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
     apiKey: "AIzaSyApE5ebUj8KaGFopZyUJpeRM0VlpHsQLDc",
@@ -9,7 +10,6 @@ const firebaseConfig = {
     appId: "1:205261962038:web:3d516a8a4080aa65b61197",
     measurementId: "G-GTFGZJF3QY"
 };
-
 
 // Inizializzare Firebase
 const app = firebase.initializeApp(firebaseConfig);
@@ -41,69 +41,122 @@ function writeMedals() {
 
 //#region collegamentoPartita.html
 
+
+/** la funzione prende come argomento il codice sessione di una partita e verifica il numero di giocatori*/
+async function _canConnectToGame(code) {
+
+    try {
+        let result = await db.ref(`session/${code}/`).once('value')
+            .then(function (snapshot) {
+                childNum = snapshot.numChildren();
+                console.log(`session ${code} players count ${childNum}`)
+                if (childNum <= MAX_PLAYERS && childNum != null && childNum != undefined) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+    } catch (error) {
+        console.error(error);
+        displayAlert("Error: " + error.message);
+        return false
+    }
+
+    // db.ref(`session/${code}/`).once('value')
+    //     .then(function (snapshot) {
+    //         childNum = snapshot.numChildren();
+    //         console.log(`session ${code} players count ${childNum}`)
+    //         if (childNum <= MAX_PLAYERS && childNum != null && childNum != undefined) {
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error(error);
+    //         displayAlert("Error: " + error.message);
+    //         return false
+    //     });
+}
+
+function _addPlayerToSession(playerid, code) {
+    console.log(`connecting user with id ${playerid} to db and session ${code}`)
+    if (playerid == null || playerid == 'null') {
+        displayAlert("Invalid user, either login or get a guest account")
+        return false
+    }
+
+    if (code == null || code == 'null') {
+        displayAlert("Invalid session code, connect to a game session")
+        return false
+    }
+
+    let playerKey = `session/${code}/${playerid}`
+    let playerObj = {
+        is_jumping: false,
+        is_alive: true,
+        is_touchingDown: false,
+        score: 0
+    }
+    //add dino_color for guest players
+    if (playerid.startsWith("guest_")) {
+        playerObj['dino_color'] = "0x000";
+    }
+
+    db.ref('session/').once('value')
+        .then(function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+                if (code == childSnapshot.key) {
+                    db.ref(playerKey).set(playerObj);
+                    // localStorage.setItem("sessionId", code);
+                    // window.open(destination, "_self");
+                }
+            });
+        })
+        .catch(error => {
+            console.error(error);
+            displayAlert("Error: " + error.message);
+        });
+}
+
+/**
+ * sets localStorage "code" value by reading it from document.getElementById("code").value or by the give parameter
+ */
+function setSessionCode(inputCode = null) {
+    let code = inputCode
+    if (inputCode == null) {
+        code = document.getElementById("code").value;
+    }
+
+    localStorage.setItem('code', code);
+    console.log(`setting session code to ${code} from ${inputCode}`)
+    return code;
+}
 /**
  * La funzione connectToGame prende il codice della partita inserita dall'utente e se esiste lo aggiunge alla partita.
  * Ogni partita può avere al massimo 10 giocatori connessi.
  */
 
-// TODO replace origin with event
-// TODO refactor
-function connectToGame(origin) {
-    code = document.getElementById("code").value;
-    localStorage.setItem('code', code);
+// TODO add origin so that connection is possible also from the arena
+function connectToGame(code = null) {
+    code = setSessionCode(code)
+    let playerid = getPlayerId()
 
-    let destination = ''
-    if (origin == 'player') {
-        destination = 'player.html'
-    }
-    if (origin == 'arena') {
-        destination = 'arena.html'
+    if (playerid == null || playerid == 'null') {
+        displayAlert("Invalid user, either login or get a guest account")
+        return false
     }
 
-    db.ref('session/' + code + "/").once('value', function (snapshot) {
-        childNum = snapshot.numChildren();
-    });
-    if (childNum < 11 && childNum != null && childNum != undefined) {
-        if (firebase.auth().currentUser == null) {
-            generateGuestId();
-            console.log(`connecting user with guest id to db and session ${code}`)
-            db.ref('session/').once('value', function (snapshot) {
-                snapshot.forEach(function (childSnapshot) {
-                    if (code == childSnapshot.key) {
-                        db.ref('session/' + childSnapshot.key + '/' + id).set({
-                            is_jumping: false,
-                            is_alive: true,
-                            is_touchingDown: false,
-                            score: 0,
-                            dino_color: "0x000",
-                        });
-                        localStorage.setItem("sessionId", code);
-                        window.open(destination, "_self");
-                    }
-                });
-            });
-            console.log(`session ${code} not found in db with guest user`)
-        } else {
-            id = firebase.auth().currentUser.uid;
-            console.log(`connecting user ${id} to db and session ${code}`)
-            db.ref('session/').once('value', function (snapshot) {
-                snapshot.forEach(function (childSnapshot) {
-                    if (code == childSnapshot.key) {
-                        db.ref('session/' + childSnapshot.key + '/' + id).set({
-                            is_jumping: false,
-                            is_alive: true,
-                            is_touchingDown: false,
-                            score: 0,
-                        });
-                        localStorage.setItem("sessionId", code);
-                        window.open(destination, "_self");
-                    }
-                });
-            });
-            console.log(`session ${code} not found in db with logged user`)
-        }
-    } else if (childNum >= 10) {
-        alert("Troppi giocatori (numero massimo: 10)");
+    if (code == null || code == 'null') {
+        displayAlert("Invalid session code, connect to a game session")
+        return false
+    }
+
+    //async stuff going on here
+    if (_canConnectToGame(code)) {
+        _addPlayerToSession(playerid, code)
+    } else {
+        displayAlert("Troppi giocatori nella sessione")
     }
 }
 
@@ -125,32 +178,51 @@ function generateGuestId() {
  */
 // TODO refactor
 function jump() {
-    db.ref('session/' + localStorage.getItem('code')).once('value', function (snapshot) {
-        db.ref('session/').once('value', function (snapshot) {
-            snapshot.forEach(function (childSnapshot) {
-                childSnapshot.forEach(function (childChildSnapshot) {
-                    console.log("jumpOut");
-                    if (localStorage.getItem('guestId') == "null") {
-                        if (firebase.auth().currentUser.uid != null && childChildSnapshot.key == firebase.auth().currentUser.uid) {
-                            db.ref('session/' + childSnapshot.key + '/' + firebase.auth().currentUser.uid).update({
-                                is_jumping: true,
-                                score: childChildSnapshot.val().score,
-                                is_alive: childChildSnapshot.val().is_alive,
-                            });
-                        }
-                    } else if (localStorage.getItem('guestId') == childChildSnapshot.key) {
-                        db.ref('session/' + childSnapshot.key + '/' + localStorage.getItem('guestId')).update({
-                            is_jumping: true,
-                            score: childChildSnapshot.val().score,
-                            is_alive: childChildSnapshot.val().is_alive,
-                            dino_color: childChildSnapshot.val().dino_color,
-                        });
-                    }
-                });
-            });
-        });
-    });
+    db.ref(`session/${localStorage.getItem('code')}`).once('value')
+        .then(function (dataSnapshot) {
+            console.log(`session: ${localStorage.getItem('code')}, dataSnapshot: ${JSON.stringify(dataSnapshot.exportVal())}`)
+        })
 }
+
+// function jump() {
+//     db.ref(`session/${localStorage.getItem('code')}`).once('value', function (snapshot) {
+//         db.ref('session/').once('value', function (snapshot) {
+//             console.log(`processing session: ${snapshot}`)
+//             snapshot.forEach(function (childSnapshot) {
+//                 childSnapshot.forEach(function (childChildSnapshot) {
+//                     // console.log("jumpOut");
+
+//                     let playerId = null
+//                     // if (localStorage.getItem('guestId') == "null" || localStorage.getItem('guestId') == null ) {
+
+//                     if (localStorage.getItem('guestId') != null
+//                         && firebase.auth().currentUser != null
+//                         && firebase.auth().currentUser.uid != null
+//                         && childChildSnapshot.key == firebase.auth().currentUser.uid) {
+//                         // player is this registered user
+//                         playerId = firebase.auth().currentUser.uid
+//                     } else if (childChildSnapshot.key == localStorage.getItem('guestId')) {
+//                         // player is a guest
+//                         playerId = localStorage.getItem('guestId')
+//                     }
+
+//                     const playerRef = db.ref(`session/${childSnapshot.key}/${playerId}`)
+
+//                     playerRef.update({
+//                         is_jumping: true,
+//                         score: childChildSnapshot.val().score,
+//                         is_alive: childChildSnapshot.val().is_alive,
+//                         // dino_color: childChildSnapshot.val().dino_color, // check if update dino_color for guests is necessary (not needed for registered players)
+//                     }).catch((error) => {
+//                         console.log(`error jumping player ${playerId}`, error)
+//                         displayAlert(`error jumping player ${playerId}: ${error}`)
+//                     });
+
+//                 });
+//             });
+//         });
+//     });
+// }
 
 //#endregion
 
@@ -224,7 +296,7 @@ function logoutUser() {
  * Apre il file paginaUtente.html.
  */
 function openUserInformation() {
-    window.open("paginaUtente.html", "_self");
+    // window.open("paginaUtente.html", "_self");
 
 }
 
@@ -239,7 +311,7 @@ function generateSession() {
         session_id: id,
     })
         .then(() => {
-            window.open("controller.html", "_self");
+            // window.open("controller.html", "_self");
         });
 }
 
@@ -254,7 +326,7 @@ function chkSessionId(code) {
         sessionRef = db.ref(`session/${code}/`)
 
         sessionRef.get().then((doc) => {
-            if (doc.exists){
+            if (doc.exists) {
                 console.log(`session with code ${code} exists`)
             } else {
                 console.log(`session with code ${code} does not exists`)
@@ -319,6 +391,18 @@ function saveDinoColor() {
 
 //#endregion
 
+function getPlayerId() {
+
+    let playerId = null
+    if (firebase.auth().currentUser != null && firebase.auth().currentUser.uid != null) {
+        // player is this registered user
+        playerId = firebase.auth().currentUser.uid
+    } else if (localStorage.getItem('guestId') != null) {
+        // player is a guest
+        playerId = localStorage.getItem('guestId')
+    }
+    return playerId
+}
 /**
  * La funzione showUserInformation dopo aver effettuato il login mostra le informazioni dell'utente e le opzioni non visibili ai guest.
  */
@@ -345,10 +429,11 @@ function showUserInformation() {
 }
 
 function updateUserInfo() {
-
     let guestId = localStorage.getItem('guestId');
     let user = firebase.auth().currentUser;
-    if (guestId != null || user != null || guestId != "null" || user != "null") {
+    console.log(`guestId: ${guestId}`)
+    console.log(`user: ${user}`)
+    if ((guestId != null && guestId != "null") || (user != null && user != "null")) {
 
         document.getElementById("div_signin").style.display = "none";   //hide sign in button
         document.getElementById("btn_account").classList.remove("d-none");  //display user account button
@@ -357,10 +442,16 @@ function updateUserInfo() {
             document.getElementById("btn_logout").classList.remove("d-none");   //display logout button
             document.getElementById("btn_account").innerHTML = user.email.split("@")[0];    //write user name in account button
         }
-        if (guestId != null) {
+        else if (guestId != null) {
             // console.log(`guestid: ${guestId}`)
             document.getElementById("btn_account").innerHTML = guestId;
         }
+    } else {
+        document.getElementById("div_signin").style.display = "true";   //show sign in button
+        document.getElementById("btn_login").style.display = "true";    //show login button
+        document.getElementById("btn_account").classList.add("d-none");  //hide user account button
+        document.getElementById("btn_account").innerHTML = "";
+        document.getElementById("btn_logout").classList.add("d-none");   //hide logout button
     }
 }
 
