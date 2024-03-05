@@ -282,6 +282,7 @@ function generateSession() {
     localStorage.setItem("sessionId", id);
     db.ref("session/" + id).set({
         session_id: id,
+        start_ts: new Date().toJSON()
     })
         .then(() => {
             // window.open("controller.html", "_self");
