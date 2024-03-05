@@ -244,7 +244,7 @@ function generateSession() {
 }
 
 function getSessionId() {
-    chkSessionId()
+    chkSessionId(localStorage.getItem("sessionId"))
     document.getElementById('sessionId').innerHTML = localStorage.getItem("sessionId");
 }
 
@@ -344,6 +344,26 @@ function showUserInformation() {
     });
 }
 
+function updateUserInfo() {
+
+    let guestId = localStorage.getItem('guestId');
+    let user = firebase.auth().currentUser;
+    if (guestId != null || user != null || guestId != "null" || user != "null") {
+
+        document.getElementById("div_signin").style.display = "none";   //hide sign in button
+        document.getElementById("btn_account").classList.remove("d-none");  //display user account button
+        if (user != null) {
+            document.getElementById("btn_login").style.display = "none";    //hide login button
+            document.getElementById("btn_logout").classList.remove("d-none");   //display logout button
+            document.getElementById("btn_account").innerHTML = user.email.split("@")[0];    //write user name in account button
+        }
+        if (guestId != null) {
+            // console.log(`guestid: ${guestId}`)
+            document.getElementById("btn_account").innerHTML = guestId;
+        }
+    }
+}
+
 /**
  * Il listener viene chiamato alla modifica dello stato dell'autenticazione.
  * Serve per avere le informazioni di Firebase sugli utenti autenticati anche
@@ -358,26 +378,22 @@ firebase.auth().onAuthStateChanged((user) => {
         path = path[path.length - 1];
         //dino-run-and-jump/GUI%20telefono/paginaUtente.html
         if (path == "player.html") {
-            document.getElementById("btn_logout").classList.remove("d-none");
-            document.getElementById("btn_account").classList.remove("d-none");
-            document.getElementById("btn_account").innerHTML += user.email.split("@")[0];
-            document.getElementById("div_signin").style.display = "none";
-            document.getElementById("btn_login").style.display = "none";
-
-        } else if (path == "personalizzaDino.html") {
-            showUserInformation();
-            db.ref('user/').once('value', function (snapshot) {
-                snapshot.forEach(function (childSnapshot) {
-                    if (firebase.auth().currentUser.uid == childSnapshot.key) {
-                        document.getElementById('dino').style.fill = childSnapshot.val().dino_color;
-                        document.getElementById('color_input').value = childSnapshot.val().dino_color;
-                    }
-                });
-            });
-
-        } else if (path == "bacheca.html") {
-            document.getElementById('username').innerHTML = firebase.auth().currentUser.email.split("@")[0];
+            updateUserInfo()
         }
+        // } else if (path == "personalizzaDino.html") {
+        //     showUserInformation();
+        //     db.ref('user/').once('value', function (snapshot) {
+        //         snapshot.forEach(function (childSnapshot) {
+        //             if (firebase.auth().currentUser.uid == childSnapshot.key) {
+        //                 document.getElementById('dino').style.fill = childSnapshot.val().dino_color;
+        //                 document.getElementById('color_input').value = childSnapshot.val().dino_color;
+        //             }
+        //         });
+        //     });
+
+        // } else if (path == "bacheca.html") {
+        //     document.getElementById('username').innerHTML = firebase.auth().currentUser.email.split("@")[0];
+        // }
         db.ref('user/').once('value', function (snapshot) {
             if (!snapshot.child(firebase.auth().currentUser.uid).exists()) {
                 db.ref('user/' + firebase.auth().currentUser.uid).set({

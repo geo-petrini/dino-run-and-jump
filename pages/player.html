@@ -258,7 +258,7 @@
                     <button type="button" class="btn btn-outline-primary" onclick="requestPermission()">Sblocco sensori</button>
                     <div class="btn btn-secondary" type="button">
                         <label class="switch">
-                            <input id="checkboxBlockInput" type="checkbox" checked="false" onclick="toggleBlockInput()">
+                            <input id="checkboxBlockInput" type="checkbox" onclick="toggleBlockInput()">
                             <span class="slider round"></span>
                         </label>
                         <span>Blocca input</span>
@@ -298,34 +298,17 @@
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
             })
+            updateUserInfo();
+            getSessionId();            
         });
 
         // writeMedals();
     </script>
     <script type="text/javascript">
-        function updateUserInfo() {
 
-            let guestId = localStorage.getItem('guestId');
-            let user = firebase.auth().currentUser;
-            if (guestId != null || user != null) {
-
-                document.getElementById("div_signin").style.display = "none";
-                document.getElementById("btn_account").classList.remove("d-none");
-                if (user != null) {
-                    document.getElementById("btn_login").style.display = "none";
-                    document.getElementById("btn_logout").classList.remove("d-none");
-                    document.getElementById("btn_account").innerHTML = user.email.split("@")[0];
-                }
-                if (guestId != null) {
-                    // console.log(`guestid: ${guestId}`)
-                    document.getElementById("btn_account").innerHTML = guestId;
-                }
-            }
-        }
 
         setInterval(() => {
-            updateUserInfo();
-            getSessionId();
+
         }, 1500);
     </script>
 </body>

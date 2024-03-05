@@ -1,9 +1,9 @@
 function toggleBlockInput() {
     
     if (document.getElementById('checkboxBlockInput').checked){
-        document.getElementById("btn_jump").disabled = true
-    }else{
         document.getElementById("btn_jump").disabled = false
+    }else{
+        document.getElementById("btn_jump").disabled = true
     }
     // document.getElementById("btn_jump").disabled = !document.getElementById("btn_jump").disabled;
 }
