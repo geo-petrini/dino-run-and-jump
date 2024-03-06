@@ -1,17 +1,9 @@
 var host = "" //"/dino-run-and-jump/Game";
 var game;
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-// const firebaseConfig = {
-//     apiKey: "AIzaSyApE5ebUj8KaGFopZyUJpeRM0VlpHsQLDc",
-//     authDomain: "dino-run-and-jump-d4065.firebaseapp.com",
-//     databaseURL: "https://dino-run-and-jump-d4065-default-rtdb.europe-west1.firebasedatabase.app",
-//     projectId: "dino-run-and-jump-d4065",
-//     storageBucket: "dino-run-and-jump-d4065.appspot.com",
-//     messagingSenderId: "205261962038",
-//     appId: "1:205261962038:web:3d516a8a4080aa65b61197",
-//     measurementId: "G-GTFGZJF3QY"
-//   };
+// TODO refactor "dini" using classes instead of multiple lists
+// TODO normalize guests and registered users
+// TODO normalize lanes as classes instead of multiple lists
 
 //#region dichiarazione costanti 
 
@@ -202,6 +194,7 @@ function updateLobby() {
  * Il metodo createListeners crea 2 listeners che gestiscono la ricezione del salto connettendosi a firebase.
  * Un listener è utilizzato per gestire il salto dei guest, mentre l'altro per gestire il salto degli utenti loggati.
  */
+// TODO refactor and use one single listener
  function createListeners() {
     for (var i = 0; i < diniNicknames.length; i++) {
         if (diniNicknames[i].startsWith("guest_")) {

@@ -29,10 +29,11 @@ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
 //#region bacheca.html
 function writeMedals(destination) {
-    db.ref(`user/${localStorage.getItem("userUid")}/medals`).once('value', function (snapshot) {
+    db.ref(`user/${localStorage.getItem("userUid")}/medals`).once('value', function (medalsData) {
         var elemento = document.getElementById(destination);
-        snapshot.forEach(function (childSnapshot) {
-            elemento.innerHTML += '<svg width="120px" height="120px">' + childSnapshot.node_.children_.root_.value.value_ + '</svg>';
+        elemento.innerHTML = ""
+        medalsData.forEach(function (medal) {
+            elemento.innerHTML += '<svg width="120px" height="120px">' + medal.node_.children_.root_.value.value_ + '</svg>';
         });
     });
 }
@@ -335,7 +336,7 @@ function changeDinoColor(color, element) {
 
     document.getElementById(element).style.fill = color;
     // $('#'+element).css({'fill':color})
-    console.log(`dino color set to: ${document.getElementById(element).style.fill}`)
+    // console.log(`dino color set to: ${document.getElementById(element).style.fill}`)
 }
 
 function colorHexToPhaser(color){
