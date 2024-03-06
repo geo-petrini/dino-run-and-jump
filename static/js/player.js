@@ -263,16 +263,6 @@ function logoutUser() {
     });
 }
 
-
-/**
- * La funzione openUserInformation permette agli utenti di vedere e modificare le proprie informazioni.
- * Apre il file paginaUtente.html.
- */
-function openUserInformation() {
-    // window.open("paginaUtente.html", "_self");
-
-}
-
 /**
  * La funzione generateSession genera un numero a 8 cifre randomico per identificare univocamente le sessioni.
  */
