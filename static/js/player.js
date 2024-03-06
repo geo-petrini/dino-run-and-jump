@@ -28,9 +28,9 @@ var childNum;
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
 //#region bacheca.html
-function writeMedals() {
-    db.ref('user/' + localStorage.getItem("userUid") + "/medals").once('value', function (snapshot) {
-        var elemento = document.getElementById("tabMedaglie");
+function writeMedals(destination) {
+    db.ref(`user/${localStorage.getItem("userUid")}/medals`).once('value', function (snapshot) {
+        var elemento = document.getElementById(destination);
         snapshot.forEach(function (childSnapshot) {
             elemento.innerHTML += '<svg width="120px" height="120px">' + childSnapshot.node_.children_.root_.value.value_ + '</svg>';
         });

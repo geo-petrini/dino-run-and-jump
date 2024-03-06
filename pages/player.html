@@ -34,12 +34,13 @@
             <a class="navbar-brand" href="../index.html"><img src="../static/img/dino_40x40.png" width="40" height="40" alt="Dino Jump And Run"></a>
             <div class="navbar">
                 <div class="btn-group">
-                    <div class="btn btn-outline-primary disabled"><span class="iconify" data-icon="bx:bx-user-circle" data-width="16" data-height="16"></span></div>
+                    <div class="btn btn-outline-primary disabled"><span class="iconify" data-icon="bx:bx-user-circle" data-width="16"
+                            data-height="16"></span></div>
                     <button type="button" class="btn btn-outline-primary d-none" id="btn_account"></button>
                 </div>
                 <div class="nav-item">
-                    <div id="sessionId" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="bottom"
-                    title="Click to copy session id" onclick="copyToClipboard(this)">NOT CONNECTED</div>
+                    <div id="sessionId" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="bottom" title="Click to copy session id"
+                        onclick="copyToClipboard(this)">NOT CONNECTED</div>
                 </div>
             </div>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
@@ -74,17 +75,21 @@
 
     <div class="container px-4 px-lg-5 mt-5">
 
-        <div id="game-buttons" class="row justify-content-center">
-            <div class="card-deck">
+        <div id="game-buttons" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 ustify-content-center">
+            <!-- <div class="card-deck"> -->
+            <div class="col lg-2 mb-4">
                 <div class="card">
-                    <button type="button" class="btn btn-outline-success" onclick="generateSession()"><span class="iconify" data-icon="bx:bx-plus"
-                            data-width="100" data-height="100"></span></button>
+                    <button type="button" class="btn btn-outline-success" onclick="generateSession()">
+                        <span class="iconify" data-icon="bx:bx-plus" data-width="100" data-height="100"></span>
+                    </button>
                     <div class="card-body">
                         <h5 class="card-title">Crea partita</h5>
                         <p class="card-text">Avvia una nuova partita da condividere con altri giocatori o da giocare da
                             solo</p>
                     </div>
                 </div>
+            </div>
+            <div class="col lg-2 mb-4">
                 <div class="card">
                     <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#connectModal">
                         <span class="iconify" data-icon="bx:bx-link" data-width="100" data-height="100"></span>
@@ -94,6 +99,8 @@
                         <p class="card-text">Collegati ad una partita</p>
                     </div>
                 </div>
+            </div>
+            <div class="col lg-2 mb-4">
                 <div class="card">
                     <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#controllerModal">
                         <span class="iconify" data-icon="mdi:jump" data-width="100" data-height="100"></span>
@@ -104,7 +111,31 @@
                     </div>
                 </div>
             </div>
+            <div id="medalsCard" class="col lg-2 mb-4 d-none">
+                <div class="card">
+                    <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#medalsModal">
+                        <span class="iconify" data-icon="mdi:medal-outline" data-width="100" data-height="100"></span>
+                    </button>
+                    <div class="card-body">
+                        <h5 class="card-title">Medaglie</h5>
+                        <p class="card-text">Mostra le tue medaglie</p>
+                    </div>
+                </div>
+            </div>
+            <div id="customizeCard" class="col lg-2  mb-4 d-none">
+                <div class="card">
+                    <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#customizeDinoModal">
+                        <span class="iconify" data-icon="mdi:color" data-width="100" data-height="100"></span>
+                    </button>
+                    <div class="card-body">
+                        <h5 class="card-title">Personalizza</h5>
+                        <p class="card-text">Cambia il colore del tuo dinosauro</p>
+                    </div>
+                </div>
+            </div>
+            <!-- </div> -->
         </div>
+
 
         <div id="dino-display" class="row d-none">
             <div class="col h-50">
@@ -136,18 +167,6 @@
                 </svg>
             </div>
         </div>
-
-        <div id="bacheca" class="row d-none">
-            <div class="col">
-            </div>
-            <div class="col-10">
-                <div id="tabMedaglie">
-
-                </div>
-            </div>
-            <div class="col">
-            </div>
-        </div>
     </div>
 
 
@@ -176,7 +195,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
                     <button class="btn btn-outline-primary" data-dismiss="modal"
                         onclick="loginUser(document.getElementById('nickname_logIn').value, document.getElementById('password_logIn').value)">Sign
                         in</button>
@@ -208,7 +227,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
                     <button class="btn btn-outline-primary" data-bs-dismiss="modal"
                         onclick="registerNewUser(document.getElementById('nickname_signIn').value, document.getElementById('password_signIn').value)">Sign
                         up</button>
@@ -236,7 +255,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
                     <button class="btn btn-outline-primary" data-dismiss="modal" onclick="connectToGame()">Connect</button>
                 </div>
             </div>
@@ -269,7 +288,7 @@
                         </label>
                         <span>Blocca input</span>
                     </div>
-                    <button class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Close</button>
+                    <button class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Chiudi</button>
                 </div>
             </div>
         </div>
@@ -299,22 +318,69 @@
         </div>
     </div>
 
+    <!-- medals modal -->
+    <div class="modal fade" id="medalsModal" tabindex="-1" aria-labelledby="display medals" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Medaglie</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="form-group row">
+                        <div id="medalsContainer"></div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('#medalsModal').on('show.bs.modal', function (event) {
+            writeMedals("medalsContainer")
+        })
+
+    </script>
+
+
     <script>
         $(document).ready(function () {
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
             })
             updateUserInfo();
-            getSessionId();            
+            getSessionId();
         });
 
         // writeMedals();
     </script>
     <script type="text/javascript">
 
+        function toggleMedalsCard() {
+            playerid = getPlayerId()
+            if (playerid == null || playerid == 'null' || playerid.startsWith("guest_")) {
+                document.getElementById("medalsCard").classList.add("d-none");
+            } else {
+
+                document.getElementById("medalsCard").classList.remove("d-none");
+            }
+        }
+
+        function toggleCustomizeDinoCard() {
+            playerid = getPlayerId()
+            if (playerid == null || playerid == 'null' || playerid.startsWith("guest_")) {
+                document.getElementById("customizeCard").classList.add("d-none");
+            } else {
+                document.getElementById("customizeCard").classList.remove("d-none");
+            }
+        }
 
         setInterval(() => {
-
+            toggleMedalsCard()
+            toggleCustomizeDinoCard()
         }, 1500);
     </script>
 </body>
