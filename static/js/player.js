@@ -306,17 +306,50 @@ function chkSessionId(code) {
 
 //#region personalizzaDino.html
 
+function loadDinoColor(dino_element, color_input) {
+    const playerRef = `user/${firebase.auth().currentUser.uid}`
+
+    db.ref(playerRef).once('value')
+        .then(function (userData) {
+            // console.log(`userData: ${JSON.stringify(userData.toJSON())} of type ${typeof userData}`)
+            let color = userData.val().dino_color;//["dino_color"];
+            // document.getElementById(dino_element).style.fill = dinoColor;
+            if (color.startsWith("0x")){
+                color = colorPhaserToHex(color)
+            }
+            changeDinoColor(color, dino_element);
+            document.getElementById(color_input).value = color;
+
+        });
+}
+
 /**
  * La funzione changeDinoColor modifica il colore del dino in base al parametro indicato.
  * @param {*} color il nuovo colore per il dino
+ * @param {*} element elemento dove applicare il colore con style.fill
  */
-function changeDinoColor(color) {
-    document.getElementById('dino').style.fill = color;
+function changeDinoColor(color, element) {
+    if (color.startsWith( "0x")){
+        color = colorPhaserToHex(color)
+    }
+
+    document.getElementById(element).style.fill = color;
+    // $('#'+element).css({'fill':color})
+    console.log(`dino color set to: ${document.getElementById(element).style.fill}`)
+}
+
+function colorHexToPhaser(color){
+    return color.replace("#", "0x");
+}
+
+function colorPhaserToHex(color){
+    return color.replace("0x", "#");
 }
 
 /**
  * La funzione saveDinoColor registra il colore scelto dagli utenti che hanno effettuato il login.
  */
+// TODO refactor save using playerId and a better session handling with direct access instead of scanning all sessions
 function saveDinoColor() {
 
     try {
@@ -325,13 +358,14 @@ function saveDinoColor() {
         var idUsr = null;
     }
     color = document.getElementById('color_input').value;
+    color = colorHexToPhaser
     if (localStorage.getItem('guestId') != null && idUsr == null) {
         db.ref('session/').once('value', function (snapshot) {
 
             snapshot.forEach(function (childSnapshot) {
                 if (localStorage.getItem("code") == childSnapshot.key) {
-                    color = color.replace("#", "0x");
-                    db.ref('session/' + childSnapshot.key + '/' + localStorage.getItem('guestId')).set({
+                    color = colorHexToPhaser
+                    db.ref(`'session/${childSnapshot.key}/${localStorage.getItem('guestId')}`).set({
                         is_jumping: false,
                         is_touchingDown: true,
                         is_alive: true,
@@ -344,11 +378,10 @@ function saveDinoColor() {
             window.open("game.html", "_self");
         });
     } else {
-        color = color.replace("#", "0x");
-        db.ref('user/' + firebase.auth().currentUser.uid).update({
+        db.ref(`user/${firebase.auth().currentUser.uid}`).update({
             dino_color: color,
         }).then(() => {
-            window.open("paginaUtente.html", "_self");
+
         });
     }
 }
