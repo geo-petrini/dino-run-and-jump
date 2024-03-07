@@ -39,8 +39,8 @@ var cactusValidation;
 
 var diniNicknames = [];
 var childNum;
-// var diniJumps = [];
-// var diniColor = [];
+var diniJumps = [];
+var diniColor = [];
 var checkFirst = false;
 //#endregion
 
@@ -74,10 +74,13 @@ function setSettingsPhaser() {
         type: Phaser.auto,
         width: window.innerWidth,
         height: window.innerHeight,
+
         scene: [sceneLobby, sceneGame],
+
         scale: {
             autoCenter: Phaser.Scale.CENTER_BOTH,
         },
+
         physics: {
             default: 'arcade',
             arcade: {
@@ -93,10 +96,14 @@ function setSettingsPhaser() {
                 debug: false
             }
         },
+
         parent: "gameDiv",
+
         dom: {
             createContainer: true
         },
+
+        //backgroundColor: 0xDDDDDD
         backgroundColor: 0xFFFFFF,
     };
     game = new Phaser.Game(config);
@@ -140,8 +147,8 @@ function setSettingsPhaser() {
 function preloadGame() {
     this.load.image('ground', host + '../static/img/terreno3.png');
     this.load.image('mountains', host + '../static/img/montagne.png');
-    this.load.image('cloud', host + '../static/img/nuvola.png');
-    this.load.image('cactus', host + '../static/img/cactus.png');
+    this.load.image('cloud', host + '../static/img/Nuvola.png');
+    this.load.image('cactus', host + '../static/img/Cactus.png');
     this.load.spritesheet('dinoSprite', host + '../static/img/dinoSprite.png', {
         frameWidth: 50,
         frameHeight: 52
@@ -160,15 +167,42 @@ function updateLobby() {
     checkJump();
     if (runGame) {
 
-        //stop listening for new players joining the game session
         db.ref("session/" + localStorage.getItem("sessionId")).off("child_added", function(snapshot) {
-            NUM_DINI++; // TODO replace with dini.lenght()
+            NUM_DINI++;
             gameRef.scene.restart();
         });
 
         this.scene.switch('sceneGame');
     }
 }
+
+/**
+ * Il metodo createListeners crea 2 listeners che gestiscono la ricezione del salto connettendosi a firebase.
+ * Un listener è utilizzato per gestire il salto dei guest, mentre l'altro per gestire il salto degli utenti loggati.
+ */
+// TODO refactor and use one single listener
+ function createListeners() {
+    for (var i = 0; i < diniNicknames.length; i++) {
+        if (diniNicknames[i].startsWith("guest_")) {
+            db.ref("session/" + localStorage.getItem("sessionId") + "/" + diniNicknames[i]).on("child_changed", function(data) {
+                var index = diniNicknames.indexOf((data.ref_.path.pieces_)[2]);
+                var player_jump = data.val();
+                if (player_jump && (data.ref_.path.pieces_)[3] == "is_jumping") {
+                    diniJumps[index] = true;
+                }
+            });
+        } else {
+            db.ref("session/" + localStorage.getItem("sessionId") + "/" + uids[i]).on("child_changed", function(snapshot) {
+                var index = uids.indexOf((snapshot.ref_.path.pieces_)[2]);
+                var player_jump = snapshot.val();
+                if (player_jump && (snapshot.ref_.path.pieces_)[3] == "is_jumping") {
+                    diniJumps[index] = true;
+                }
+            });
+        }
+    }
+}
+
 
 /**
  * La funzione setStartValues istanzia le variabili e gli array globali precedentemente creati e li prepara
@@ -193,7 +227,10 @@ function setStartValues() {
     minimumDistance = 260;
     colliderDini = new Array(NUM_DINI);
     backgroundSpeed = 3;
-
+    score = new Array(NUM_DINI);
+    for (var i = 0; i < score.length; i++) {
+        score[i] = 0;
+    }
     cactusValidation = new Array(NUM_DINI);
     for (var i = 0; i < cactusValidation.length; i++) {
         cactusValidation[i] = new Array(NUM_CACTUS);
@@ -206,16 +243,15 @@ function setStartValues() {
     }
 
     for (var i = 0; i < diniNicknames.length; i++) {
-        // TODO move inside Dino class
-        // if (diniNicknames[i].startsWith("guest_")) {
-        //     db.ref("session/" + localStorage.getItem("sessionId") + "/" + diniNicknames[i]).update({
-        //         is_jumping: false
-        //     });
-        // } else /*if (id.length == 28)*/ {
-        //     db.ref("session/" + localStorage.getItem("sessionId") + "/" + uids[i]).update({
-        //         is_jumping: false
-        //     });
-        // }
+        if (diniNicknames[i].startsWith("guest_")) {
+            db.ref("session/" + localStorage.getItem("sessionId") + "/" + diniNicknames[i]).update({
+                is_jumping: false
+            });
+        } else /*if (id.length == 28)*/ {
+            db.ref("session/" + localStorage.getItem("sessionId") + "/" + uids[i]).update({
+                is_jumping: false
+            });
+        }
     }
     createListeners();
 }
@@ -228,12 +264,11 @@ function setStartValues() {
  */
 function setColliderLines() {
     colliderLines = gameRef.physics.add.staticGroup();
-    // TODO moved to Dino, test
-    // for (var i = 0; i < NUM_DINI; i++) {
-    //     var height = START_HEIGHT + (i * HEIGHT_SPACE);
-    //     let line = gameRef.add.zone(0, height, innerWidth, 1)
-    //     colliderLines.add(line);
-    // }
+    for (var i = 0; i < NUM_DINI; i++) {
+        var height = START_HEIGHT + (i * HEIGHT_SPACE);
+        let line = gameRef.add.zone(0, height, innerWidth, 1)
+        colliderLines.add(line);
+    }
 }
 
 /**
@@ -242,12 +277,12 @@ function setColliderLines() {
  * dalle linee create nel metodo setColliderLines.
  */
 function setGrounds() {
-    var xPosition = 0;
+    var counter = 0;
     for (var i = 0; i < grounds.length; i++) {
-        grounds[i] = gameRef.physics.add.image(xPosition, 368, 'ground').setOrigin(0, 0);
+        grounds[i] = gameRef.physics.add.image(counter, 368, 'ground').setOrigin(0, 0);
         grounds[i].setImmovable(true); // fissa i terreni
         grounds[i].body.allowGravity = false; // toglie la gravità
-        xPosition += 2000;  // width of a ground image
+        counter += 2000;
     }
 }
 
@@ -315,7 +350,6 @@ function setDiniNicknames() {
  * Imposta per ogni dino la collisione con la sua linea di sostegno create precedentemente nel metodo setColliderLines.
  * Come ultima cosa attiva l'animazione di corsa dei dini.
  */
-// TODO move to Dino class
 function setDini() {
     graphics = gameRef.add.graphics({ lineStyle: { width: 4, color: 0xaa00aa } });
     for (var i = 0; i < dini.length; i++) {
@@ -491,7 +525,6 @@ function updateCactus() {
  * Inoltre se esce completamente dal canvas viene ridisegnate in una posizione casuale.
  */
 function updateCloud() {
-    // TODO add more clouds
     //movimento cloud
     cloud.x -= 3;
 
@@ -501,6 +534,46 @@ function updateCloud() {
     }
 }
 
+/**
+ * Il metodo checkJump controlla per ogni dino se la variabile diniJumps è stata
+ * settata a true dal listener dei jump. Se è impostata a true e il dino non sta già saltando,
+ * dunque sta toccando terra, carica l'animazione di salto ed esegue il salto.
+ * Alla fine imposta tutte le variabili di salto a false.
+ */
+function checkJump() {
+    for (var i = 0; i < dini.length; i++) {
+        if (diniJumps[i] && dini[i].body.touching.down) { // https://phaser.io/examples/v3/view/physics/arcade/body-on-a-path
+            dini[i].play("jump");
+            dini[i].setVelocityY(-950);
+            dini[i].play("run");
+            diniJumps[i] = false;
+            if (diniNicknames[i].startsWith("guest_")) {
+                db.ref('session/' + localStorage.getItem("sessionId") + "/" + diniNicknames[i]).update({ 'is_jumping': false });
+            } else {
+                db.ref('session/' + localStorage.getItem("sessionId") + "/" + uids[i]).update({
+                    is_jumping: false
+                });
+            }
+        }
+    }
+}
+
+/**
+ * Il metodo setScore imposta il punteggio per ogni dino, incrementandolo per ogni cactus superato.
+ * Per evitare l'assegnazione dei punti dei cactus già precedentemente superati, si utilizza la matrice 
+ * cactusValidation.
+ */
+function setScore() {
+    for (var i = 0; i < dini.length; i++) {
+        for (var j = 0; j < cactus[i].length; j++) {
+            if (dini[i].x > cactus[i][j].x + TRANSLATION && !cactusValidation[i][j]) {
+                score[i]++;
+                cactusValidation[i][j] = true;
+                updateDifficulty();
+            }
+        }
+    }
+}
 
 /**
  * Il metodo setDifficulty incrementa la velocità di sfondo e la distaza minima tra i cactus in modo da 
@@ -530,6 +603,20 @@ function checkEndOfGame(game) {
 }
 
 /**
+ * Questa funzione modifica il valore di firebase per ogni dino 'is_touchingDown' aggiornandolo controllando se 
+ * effettivamente il dino in questione sta collidendo verso il basso.
+ */
+function setTouchingDown() {
+    for (let i = 0; i < diniNicknames.length; i++) {
+        if (diniNicknames[i].startsWith("guest_")) {
+            db.ref('session/' + localStorage.getItem("sessionId") + "/" + diniNicknames[i]).update({ 'is_touchingDown': dini[i].body.touching.down });
+        } else {
+            db.ref('session/' + localStorage.getItem("sessionId") + "/" + uids[i]).update({ 'is_touchingDown': dini[i].body.touching.down });
+        }
+    }
+}
+
+/**
  * La funzione updateGame viene richiamata direttamente da Phaser dopo la funzione createGame, come impostato nel metodo setSettingsPhaser().
  * Questo metodo viene ciclato e richiamato 60 volte al secondo.
  * La funzione rende possibile il salto e la morte dei dini.
@@ -537,12 +624,12 @@ function checkEndOfGame(game) {
  * Inoltre imposta il punteggio e la difficoltà e controlla se il gioco finisce.
  */
 function updateGame() {
-
-    dini.forEach( update );
+    setTouchingDown();
     updateGrounds();
     updateMountains();
     updateCactus();
     updateCloud();
+    checkJump();
     setScore();
     checkEndOfGame(this);
 }
@@ -565,43 +652,6 @@ function startGame() {
     gameRef.scene.restart();
 }
 
-
-/**
- * Il metodo backToHome carica la pagina iniziale di login (player.html).
- * Inoltre elimina la sessione creata
- */
-function backToHome() {
-    db.ref('session/' + localStorage.getItem("sessionId")).remove();
-    window.open("player.html", "_self");
-}
-
-
-
-
-// #region REFACTORING ###################################################################
-
-
-
-/**
- * Il metodo setScore imposta il punteggio per ogni dino, incrementandolo per ogni cactus superato.
- * Per evitare l'assegnazione dei punti dei cactus già precedentemente superati, si utilizza la matrice 
- * cactusValidation.
- */
-function setScore() {
-    // TODO work with lanes, it is not necessary to create all those cacti, just one line repeated multiple times
-
-    // for (var i = 0; i < dini.length; i++) {
-    //     for (var j = 0; j < cactus[i].length; j++) {
-    //         if (dini[i].x > cactus[i][j].x + TRANSLATION && !cactusValidation[i][j]) {
-    //             dini[i].score++;
-    //             cactusValidation[i][j] = true;
-    //             updateDifficulty();
-    //         }
-    //     }
-    // }
-}
-
-
 /**
  * La funzione leaderboard lista tutti i giocatori e li ordina per il punteggio.
  * Crea una tabella con la classifica e genera una medaglia utilizzando il metodo
@@ -612,42 +662,75 @@ function setScore() {
 function leaderboard() {
     document.getElementById("game").style.display = "none";
     document.getElementById("leaderboard").style.display = "block";
+    var result = {};
+    diniNicknames.forEach((key, i) => result[key] = score[i]);
 
-    // TODO get player with the best score > 0
-    // TODO assign the medal dino.assignMedal(medal)
-    // TODO save score dino.saveScore()
+    var items = Object.keys(result).map(function(key) {
+        return [key, result[key]];
+    });
 
-    // var result = {};
-    // diniNicknames.forEach((key, i) => result[key] = dini[i].score);
-
-    // var items = Object.keys(result).map(function(key) {
-    //     return [key, result[key]];
-    // });
-
-    // // Sort the array based on the second element
-    // items.sort(function(first, second) {
-    //     return second[1] - first[1];
-    // });
-    // // document.getElementById("restart").style.display = "block";
-    // // document.getElementById("home").style.display = "block";
-    // var table = document.getElementById("leader_table");
-    // var medal = createMedal(0, 0, 100);
-    // var i = 1;
-    // for (const [key, value] of items) {
-    //     var row = "";
-    //     row += '<tr><th scope="row">' + i + '</th><td>' + key + '</td><td>' + value + '</td>';
-    //     if (i == 1) {
-    //         row += '<td><svg width="100px" height="100px">' + medal + '</svg></td>';
-    //         if (!key.includes("guest")) {
-    //             saveMedal(medal, key);
-    //             saveScore(value, key);
-    //         }
-    //     } else {
-    //         row += "<td></td>";
-    //     }
-    //     row += "</tr>"
-    //     table.innerHTML += row;
-    //     i++;
-    // }
+    // Sort the array based on the second element
+    items.sort(function(first, second) {
+        return second[1] - first[1];
+    });
+    // document.getElementById("restart").style.display = "block";
+    // document.getElementById("home").style.display = "block";
+    var table = document.getElementById("leader_table");
+    var medal = createMedal(0, 0, 100);
+    var i = 1;
+    for (const [key, value] of items) {
+        var row = "";
+        row += '<tr><th scope="row">' + i + '</th><td>' + key + '</td><td>' + value + '</td>';
+        if (i == 1) {
+            row += '<td><svg width="100px" height="100px">' + medal + '</svg></td>';
+            if (!key.includes("guest")) {
+                saveMedal(medal, key);
+                saveScore(value, key);
+            }
+        } else {
+            row += "<td></td>";
+        }
+        row += "</tr>"
+        table.innerHTML += row;
+        i++;
+    }
 }
-// #endregion
+
+/**
+ * La funzione saveMedal salva la medaglia su firebase all'utente passato come parametro.
+ * @param {*} medal Il codice svg della medaglia da salvare
+ * @param {*} user L'utente a cui salvare la medaglia su firebase
+ */
+function saveMedal(medal, user) {
+    db.ref('user/' + uids[diniNicknames.indexOf(user)] + "/medals").push({
+        medal
+    });
+}
+
+/**
+ * La funzione saveScore salva il punteggio su firebase all'utente passato come parametro.
+ * @param {*} score Il punteggio da salvare
+ * @param {*} user L'utente a cui salvare il punteggio su firebase
+ */
+function saveScore(score, nick) {
+    console.log('user/' + uids[diniNicknames.indexOf(nick)]);
+    console.log(score);
+    db.ref('user/' + uids[diniNicknames.indexOf(nick)]).once("value", function(data) {
+        var old_score = data.val().best_score;
+        if (score > old_score) {
+            db.ref('user/' + uids[diniNicknames.indexOf(nick)]).update({
+                best_score: score,
+            });
+        }
+    });
+
+}
+
+/**
+ * Il metodo backToHome carica la pagina iniziale di login (player.html).
+ * Inoltre elimina la sessione creata
+ */
+function backToHome() {
+    db.ref('session/' + localStorage.getItem("sessionId")).remove();
+    window.open("player.html", "_self");
+}
