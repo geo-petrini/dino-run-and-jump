@@ -31,7 +31,6 @@ console.log('firebase variables initialized')
 var grounds;
 var mountains;
 var cloud;
-var colorDini = "0x";
 
 var dini;
 var cactus;
@@ -50,15 +49,6 @@ var diniColor = [];
 var checkFirst = false;
 //#endregion
 
-// // Inizializzare Firebase
-// const app = firebase.initializeApp(firebaseConfig);
-// // Inizializzare database
-// const db = firebase.database();
-// // Inizializzare variabili globali legate a firebase
-// const auth = firebase.auth();
-// var timestamp = Date.now();
-// const user = firebase.auth().currentUser;
-// firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 var uids = [];
 var gameRef;
 var runGame = false;
@@ -228,7 +218,6 @@ function setStartValues() {
     mountains = new Array(NUM_MOUNTAINS);
 
     cloud;
-    colorDini = "0x";
 
     dini = new Array(NUM_DINI);
     cactus = new Array(NUM_DINI);
