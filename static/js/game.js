@@ -141,8 +141,8 @@ function preloadGame() {
  */
 function updateLobby() {
 
-    setTouchingDown();
-    checkJump();
+    // setTouchingDown();
+    // checkJump();
     if (runGame) {
 
         //stop listening for new players joining the game session
@@ -190,7 +190,7 @@ function setStartValues() {
         }
     }
 
-    for (var i = 0; i < diniNicknames.length; i++) {
+    // for (var i = 0; i < diniNicknames.length; i++) {
         // TODO move inside Dino class
         // if (diniNicknames[i].startsWith("guest_")) {
         //     db.ref("session/" + localStorage.getItem("sessionId") + "/" + diniNicknames[i]).update({
@@ -201,7 +201,7 @@ function setStartValues() {
         //         is_jumping: false
         //     });
         // }
-    }
+    // }
     // createListeners();
 }
 
@@ -287,11 +287,11 @@ function setCactus() {
  * La funzione setDiniNicknames serve a fare apparire per ogni dino il suo nickname, visualizzandolo
  * a sinistra all'inizio della sua corsia.
  */
-function setDiniNicknames() {
-    for (var i = 0; i < diniNicknames.length; i++) {
-        gameRef.add.text(START_DISTANCE_DINI + (i * TRANSLATION) - 200, START_HEIGHT - 20 + HEIGHT_SPACE * i, diniNicknames[i], { fontFamily: 'Arial', fontSize: 20, color: '#000' });
-    }
-}
+// function setDiniNicknames() {
+//     for (var i = 0; i < diniNicknames.length; i++) {
+//         gameRef.add.text(START_DISTANCE_DINI + (i * TRANSLATION) - 200, START_HEIGHT - 20 + HEIGHT_SPACE * i, diniNicknames[i], { fontFamily: 'Arial', fontSize: 20, color: '#000' });
+//     }
+// }
 
 /**
  * La funzione setDini crea i dini per ogni utente collegato.
@@ -304,11 +304,11 @@ function setDiniNicknames() {
 function setDini() {
     graphics = gameRef.add.graphics({ lineStyle: { width: 4, color: 0xaa00aa } });
     for (var i = 0; i < dini.length; i++) {
-        dini[i] = gameRef.physics.add.sprite(START_DISTANCE_DINI + (i * TRANSLATION), 0, 'dinoSprite').setOrigin(0, 0);
-        dini[i].setTintFill(diniColor[i], diniColor[i], diniColor[i], diniColor[i]);
-        dini[i].setCollideWorldBounds(true); //collisioni del dino con i bordi
-        colliderDini[i] = gameRef.physics.add.collider(dini[i], colliderLines.getChildren()[i]);
-        dini[i].play("run");
+        // dini[i] = gameRef.physics.add.sprite(START_DISTANCE_DINI + (i * TRANSLATION), 0, 'dinoSprite').setOrigin(0, 0);
+        // dini[i].setTintFill(diniColor[i], diniColor[i], diniColor[i], diniColor[i]);
+        // dini[i].setCollideWorldBounds(true); //collisioni del dino con i bordi
+        // colliderDini[i] = gameRef.physics.add.collider(dini[i], colliderLines.getChildren()[i]);
+        // dini[i].play("run");
     }
 }
 
@@ -395,7 +395,7 @@ function createGame() {
     setAnimations();
     setDini();
     setColliderCactusDini();
-    setDiniNicknames();
+    // setDiniNicknames();
 }
 
 
