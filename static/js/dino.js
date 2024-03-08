@@ -5,12 +5,29 @@ class Dino {
         // TODO load data from fb
         this.id = playerId;
         this.dino = null    // dino sprite
+        this.dinoColor = null
+        this.nickname = ""
         this.score = 0
         this.x = 0
         this.sessionPlayerReference = db.ref(`session/${localStorage.getItem("sessionId")}/${this.id}`)
         this.is_jumping = false
+        _loadDino()
         _createColliderLine()
         _createJumpListener()
+    }
+
+
+    _loadDino() { 
+    if (this.id.startsWith("guest_")) {
+        this.sessionPlayerReference().once("value", function (userData) {
+            this.dinoColor = userData.val().dino_color;
+        });        
+        this.nickname = id
+    } else if (id.length == 28) {
+        db.ref(`user/${this.id}`).once("value", function (userData) {
+            this.nickname = userData.val().nickname;
+            this.dinoColor = userData.val().dino_color;
+        });        
     }
 
     _createSprite() {

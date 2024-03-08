@@ -9,7 +9,7 @@ var game;
 
 
 // Inizializzare costanti di gioco
-var NUM_DINI = 0;
+var NUM_DINI = 0;   // TODO remove
 const NUM_GROUNDS = 3;
 const NUM_MOUNTAINS = 10;
 const NUM_CACTUS = 5;
@@ -27,7 +27,7 @@ var grounds;
 var mountains;
 var cloud;
 
-var dini;
+var dini;   //will be initialized as list conaining Dino instances
 var cactus;
 var colliderLines;
 
@@ -37,14 +37,14 @@ var backgroundSpeed;        //this is the game speed and gets faster as the game
 var score;
 var cactusValidation;
 
-var diniNicknames = [];
+// var diniNicknames = [];
 var childNum;
 // var diniJumps = [];
 // var diniColor = [];
 var checkFirst = false;
 //#endregion
 
-var uids = [];
+// var uids = [];
 var gameRef;
 var runGame = false;
 
@@ -107,29 +107,14 @@ function setSettingsPhaser() {
  * La funzione aggiunge elementi agli array nelle variabili globali, per aggiungere il nuovo dino e ricarica la scena di gioco.
  */
  db.ref("session/" + localStorage.getItem("sessionId")).on("child_added", function(snapshot) {
-    db.ref('session/' + localStorage.getItem("sessionId") + "/").once('value', function(snapshot) {
-        childNum = snapshot.numChildren();
+    db.ref('session/' + localStorage.getItem("sessionId") + "/").once('value', function(sessionSnapshot) {
+        childNum = sessionSnapshot.numChildren();
     });
-    if(checkFirst && childNum > 0){
-        if (NUM_DINI < 10) {
-            NUM_DINI++;
-            var id = snapshot.key;
-            if (id.startsWith("guest_")) {
-                diniNicknames.push(snapshot.key);
-                diniColor.push(snapshot.val().dino_color);
-                uids.push(null);
-            } else if (id.length == 28) {
-                db.ref('user/' + snapshot.key).once("value", function(data) {
-                    var uid = data.key;
-                    uids.push(uid);
-                    diniNicknames.push(data.val().nickname);
-                    diniColor.push(data.val().dino_color);
-                });
-            }
-            diniJumps.push(false);
-            gameRef.scene.restart();
-        }
-    }else{ checkFirst = true; }
+
+    var playerId = snapshot.key
+    var dino = new Dino(gameRef, playerId, dini.length+1)
+    dini.add(dino)
+    gameRef.scene.restart();
 });
 
 
@@ -217,7 +202,7 @@ function setStartValues() {
         //     });
         // }
     }
-    createListeners();
+    // createListeners();
 }
 
 
