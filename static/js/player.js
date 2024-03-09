@@ -47,7 +47,7 @@ function writeMedals(destination) {
 async function _canConnectToGame(code) {
 
     try {
-        let result = await db.ref(`session/${code}/`).once('value')
+        let result = await db.ref(`session/${code}/players`).once('value')
             .then(function (snapshot) {
                 childNum = snapshot.numChildren();
                 console.log(`session ${code} players count ${childNum}`)
@@ -92,7 +92,7 @@ function _addPlayerToSession(playerid, code) {
         return false
     }
 
-    let playerKey = `session/${code}/${playerid}`
+    let playerKey = `session/${code}/players/${playerid}`
     let playerObj = {
         is_jumping: false,
         is_alive: true,
@@ -104,6 +104,7 @@ function _addPlayerToSession(playerid, code) {
         playerObj['dino_color'] = "0x000";
     }
 
+    // TODO find a better way to add the user to the session, this code is cycling all session codes!
     db.ref('session/').once('value')
         .then(function (snapshot) {
             snapshot.forEach(function (childSnapshot) {
@@ -179,7 +180,7 @@ function generateGuestId() {
  */
 // TODO refactor
 function jump() {
-    db.ref(`session/${localStorage.getItem('code')}`).once('value')
+    db.ref(`session/${localStorage.getItem('code')}/players`).once('value')
         .then(function (sessionData) {
             // console.log(`session: ${localStorage.getItem('code')}, dataSnapshot: ${JSON.stringify(sessionData.exportVal())}`)
             sessionData.forEach(function (sessionPlayer) {
@@ -188,7 +189,7 @@ function jump() {
                 const playerId = getPlayerId()
                 if (sessionPlayer.key == playerId) {
 
-                    const playerRef = db.ref(`session/${localStorage.getItem('code')}/${playerId}`)
+                    const playerRef = db.ref(`session/${localStorage.getItem('code')}/players/${playerId}`)
                     // console.log(`session: ${localStorage.getItem('code')}, updating playerRef: ${JSON.stringify(playerRef.toJSON())} of type ${typeof playerRef}`)
                     playerRef.update({ is_jumping: true }).catch((error) => {
                         console.log(`error jumping player ${playerId}`, error)
@@ -282,17 +283,25 @@ function generateSession() {
 
 function getSessionId() {
     chkSessionId(localStorage.getItem("sessionId"))
-    document.getElementById('sessionId').innerHTML = localStorage.getItem("sessionId");
+    if( localStorage.getItem("sessionId") != null ){
+        document.getElementById('sessionId').classList.remove("d-none");
+        document.getElementById('sessionId').innerHTML = localStorage.getItem("sessionId");
+    } else {
+        document.getElementById('sessionId').classList.add("d-none");
+        document.getElementById('sessionId').innerHTML = '';
+    }
 }
 
-// TODO implement check
+// TODO implement check because it does not seem to work
 function chkSessionId(code) {
     if (code != null) {
         sessionRef = db.ref(`session/${code}/`)
 
         sessionRef.get().then((doc) => {
-            if (doc.exists) {
-                console.log(`session with code ${code} exists`)
+            if (doc.exists && doc.toJSON() != null) {
+                //console.log(`session with code ${code} exists`)
+                // console.log(`session with code ${code} exists: ${JSON.stringify(doc.toJSON())}`)
+                console.log(`session with code ${code} exists: ${doc.toJSON()}`)
             } else {
                 console.log(`session with code ${code} does not exists`)
                 localStorage.removeItem("sessionId")
@@ -366,7 +375,7 @@ function saveDinoColor() {
             snapshot.forEach(function (childSnapshot) {
                 if (localStorage.getItem("code") == childSnapshot.key) {
                     color = colorHexToPhaser
-                    db.ref(`'session/${childSnapshot.key}/${localStorage.getItem('guestId')}`).set({
+                    db.ref(`'session/${childSnapshot.key}/players/${localStorage.getItem('guestId')}`).set({
                         is_jumping: false,
                         is_touchingDown: true,
                         is_alive: true,
@@ -434,6 +443,7 @@ function updateUserInfo() {
     if ((guestId != null && guestId != "null") || (user != null && user != "null")) {
 
         document.getElementById("div_signin").style.display = "none";   //hide sign in button
+        document.getElementById("div_guest_signin").classList.add("d-none");
         document.getElementById("btn_account").classList.remove("d-none");  //display user account button
         if (user != null) {
             document.getElementById("btn_login").style.display = "none";    //hide login button
@@ -446,6 +456,7 @@ function updateUserInfo() {
         }
     } else {
         document.getElementById("div_signin").style.display = "true";   //show sign in button
+        document.getElementById("div_guest_signin").classList.remove("d-none");
         document.getElementById("btn_login").style.display = "true";    //show login button
         document.getElementById("btn_account").classList.add("d-none");  //hide user account button
         document.getElementById("btn_account").innerHTML = "";
@@ -510,14 +521,14 @@ function checkLoggedUser() {
  * @returns is_touching down
  */
 function getIsTouchingDown() {
-
+    //update using playerId
     if (localStorage.getItem("guestId") == "null") {
-        db.ref('session/' + localStorage.getItem("code") + "/" + firebase.auth().currentUser.uid).once('value', function (snapshot) {
+        db.ref(`session/${localStorage.getItem("code")}/players/${firebase.auth().currentUser.uid}`).once('value', function (snapshot) {
             isTouchingDown = snapshot.val().is_touchingDown;
 
         });
     } else {
-        db.ref('session/' + localStorage.getItem("code") + "/" + localStorage.getItem("guestId")).once('value', function (snapshot) {
+        db.ref(`session/${localStorage.getItem("code")}/players/${localStorage.getItem("guestId")}`).once('value', function (snapshot) {
             isTouchingDown = snapshot.val().is_touchingDown;
 
         });

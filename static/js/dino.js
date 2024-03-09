@@ -11,21 +11,22 @@ class Dino {
         this.x = 0
         this.sessionPlayerReference = db.ref(`session/${localStorage.getItem("sessionId")}/${this.id}`)
         this.is_jumping = false
-        _loadPlayerData()
-        _createSprite()
-        _createPlayerName()
-        _createColliderLine()
-        _createJumpListener()
+        this._loadPlayerData()
+        this._createColliderLine()
+        this._createSprite()    //must go after collider line
+        this._createPlayerName()
+        this._createJumpListener()
     }
 
 
     _loadPlayerData() {
+        console.log(`this: ${this}`)
         if (this.id.startsWith("guest_")) {
-            this.sessionPlayerReference().once("value", function (userData) {
+            this.sessionPlayerReference.once("value", function (userData) {
                 this.dinoColor = userData.val().dino_color;
             });
-            this.nickname = id
-        } else if (id.length == 28) {
+            this.nickname = this.id
+        } else if (this.id.length == 28) {
             db.ref(`user/${this.id}`).once("value", function (userData) {
                 this.nickname = userData.val().nickname;
                 this.dinoColor = userData.val().dino_color;
@@ -60,8 +61,8 @@ class Dino {
 
     _createColliderLine() {
         let height = this.game.START_HEIGHT + (this.playerNumberi * game.HEIGHT_SPACE);
-        this.line = this.game.add.zone(0, height, this.game.window.innerWidth, 1)
-        this.game.colliderLines.add(line)
+        this.line = this.game.add.zone(0, height, 100, 1)
+        // this.game.colliderLines.add(line)
     }
 
     _updateGroundCollision() {
@@ -109,8 +110,8 @@ class Dino {
 
     update() {
         // TODO update player dino sprite
-        _updateGroundCollision()
-        doJump()
+        this._updateGroundCollision()
+        this.doJump()
     }
 }
 

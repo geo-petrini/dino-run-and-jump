@@ -45,7 +45,7 @@ var checkFirst = false;
 //#endregion
 
 var uids = [];
-var gameRef;
+var game;
 var runGame = false;
 
 
@@ -134,7 +134,7 @@ function setSettingsPhaser() {
                 });
             }
             diniJumps.push(false);
-            gameRef.scene.restart();
+            game.scene.restart();
         }
     }else{ checkFirst = true; }
 });
@@ -169,7 +169,7 @@ function updateLobby() {
 
         db.ref("session/" + localStorage.getItem("sessionId")).off("child_added", function(snapshot) {
             NUM_DINI++;
-            gameRef.scene.restart();
+            game.scene.restart();
         });
 
         this.scene.switch('sceneGame');
@@ -263,10 +263,10 @@ function setStartValues() {
  * la linea a loro assegnata in modo da rimanere nella giusta corsia.
  */
 function setColliderLines() {
-    colliderLines = gameRef.physics.add.staticGroup();
+    colliderLines = game.physics.add.staticGroup();
     for (var i = 0; i < NUM_DINI; i++) {
         var height = START_HEIGHT + (i * HEIGHT_SPACE);
-        let line = gameRef.add.zone(0, height, innerWidth, 1)
+        let line = game.add.zone(0, height, innerWidth, 1)
         colliderLines.add(line);
     }
 }
@@ -279,7 +279,7 @@ function setColliderLines() {
 function setGrounds() {
     var counter = 0;
     for (var i = 0; i < grounds.length; i++) {
-        grounds[i] = gameRef.physics.add.image(counter, 368, 'ground').setOrigin(0, 0);
+        grounds[i] = game.physics.add.image(counter, 368, 'ground').setOrigin(0, 0);
         grounds[i].setImmovable(true); // fissa i terreni
         grounds[i].body.allowGravity = false; // toglie la gravità
         counter += 2000;
@@ -293,7 +293,7 @@ function setGrounds() {
 function setMountains() {
     counter = 0;
     for (var i = 0; i < mountains.length; i++) {
-        mountains[i] = gameRef.physics.add.image(counter, 275, 'mountains').setOrigin(0, 0);
+        mountains[i] = game.physics.add.image(counter, 275, 'mountains').setOrigin(0, 0);
         mountains[i].setImmovable(true); //fissa le mountains
         mountains[i].body.allowGravity = false; // toglie la gravità
         counter += 408;
@@ -305,7 +305,7 @@ function setMountains() {
  *  e la imposta nella posizione corretta.
  */
 function setCloud() {
-    cloud = gameRef.add.image(1200, 255, 'cloud').setOrigin(0, 0);
+    cloud = game.add.image(1200, 255, 'cloud').setOrigin(0, 0);
 }
 
 /**
@@ -326,7 +326,7 @@ function setCactus() {
             } else {
                 x = cactus[i - 1][j].x + TRANSLATION;
             }
-            cactus[i][j] = gameRef.physics.add.image(x, START_HEIGHT + (i * HEIGHT_SPACE) - HEIGHT_CACTUS, 'cactus').setOrigin(0, 0);
+            cactus[i][j] = game.physics.add.image(x, START_HEIGHT + (i * HEIGHT_SPACE) - HEIGHT_CACTUS, 'cactus').setOrigin(0, 0);
             cactus[i][j].setImmovable(true);
             cactus[i][j].body.allowGravity = false;
         }
@@ -339,7 +339,7 @@ function setCactus() {
  */
 function setDiniNicknames() {
     for (var i = 0; i < diniNicknames.length; i++) {
-        gameRef.add.text(START_DISTANCE_DINI + (i * TRANSLATION) - 200, START_HEIGHT - 20 + HEIGHT_SPACE * i, diniNicknames[i], { fontFamily: 'Arial', fontSize: 20, color: '#000' });
+        game.add.text(START_DISTANCE_DINI + (i * TRANSLATION) - 200, START_HEIGHT - 20 + HEIGHT_SPACE * i, diniNicknames[i], { fontFamily: 'Arial', fontSize: 20, color: '#000' });
     }
 }
 
@@ -351,12 +351,12 @@ function setDiniNicknames() {
  * Come ultima cosa attiva l'animazione di corsa dei dini.
  */
 function setDini() {
-    graphics = gameRef.add.graphics({ lineStyle: { width: 4, color: 0xaa00aa } });
+    graphics = game.add.graphics({ lineStyle: { width: 4, color: 0xaa00aa } });
     for (var i = 0; i < dini.length; i++) {
-        dini[i] = gameRef.physics.add.sprite(START_DISTANCE_DINI + (i * TRANSLATION), 0, 'dinoSprite').setOrigin(0, 0);
+        dini[i] = game.physics.add.sprite(START_DISTANCE_DINI + (i * TRANSLATION), 0, 'dinoSprite').setOrigin(0, 0);
         dini[i].setTintFill(diniColor[i], diniColor[i], diniColor[i], diniColor[i]);
         dini[i].setCollideWorldBounds(true); //collisioni del dino con i bordi
-        colliderDini[i] = gameRef.physics.add.collider(dini[i], colliderLines.getChildren()[i]);
+        colliderDini[i] = game.physics.add.collider(dini[i], colliderLines.getChildren()[i]);
         dini[i].play("run");
     }
 }
@@ -367,9 +367,9 @@ function setDini() {
  */
 function setAnimations() {
     //animazione di corsa
-    gameRef.anims.create({
+    game.anims.create({
         key: 'run',
-        frames: gameRef.anims.generateFrameNumbers('dinoSprite', {
+        frames: game.anims.generateFrameNumbers('dinoSprite', {
             start: 0,
             end: 1
         }),
@@ -378,9 +378,9 @@ function setAnimations() {
     });
 
     //animazione di salto
-    gameRef.anims.create({
+    game.anims.create({
         key: 'jump',
-        frames: gameRef.anims.generateFrameNumbers('dinoSprite', {
+        frames: game.anims.generateFrameNumbers('dinoSprite', {
             start: 2,
             end: 2
         }),
@@ -389,9 +389,9 @@ function setAnimations() {
     });
 
     //animazione di morte
-    gameRef.anims.create({
+    game.anims.create({
         key: 'death',
-        frames: gameRef.anims.generateFrameNumbers('dinoSprite', {
+        frames: game.anims.generateFrameNumbers('dinoSprite', {
             start: 3,
             end: 3
         }),
@@ -421,7 +421,7 @@ function collideCactus(dino) {
 function setColliderCactusDini() {
     for (var i = 0; i < cactus.length; i++) {
         for (var j = 0; j < cactus[i].length; j++) {
-            gameRef.physics.add.overlap(dini[i], cactus[i][j], collideCactus, null, gameRef);
+            game.physics.add.overlap(dini[i], cactus[i][j], collideCactus, null, game);
         }
     }
 }
@@ -433,7 +433,7 @@ function setColliderCactusDini() {
  */
 function createGame() {
     document.getElementById('sessionId').innerHTML = localStorage.getItem("sessionId");
-    gameRef = this;
+    game = this;
     
     setStartValues();
     setColliderLines();
@@ -649,7 +649,7 @@ function endOfTheGame(game) {
  */
 function startGame() {
     runGame = true;
-    gameRef.scene.restart();
+    game.scene.restart();
 }
 
 /**

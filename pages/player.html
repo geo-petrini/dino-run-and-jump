@@ -64,6 +64,11 @@
                             <span class="pt-2 text-danger" id="singIn_error"></span>
                         </div>
                     </li>
+                    <li class="nav-item">
+                        <div id="div_guest_signin">
+                            <a class="btn btn-outline-warning" data-toggle="modal" onclick="generateGuestId()"></span>Enter as guest</a>
+                        </div>
+                    </li>                    
                 </ul>
             </div>
 
@@ -388,6 +393,8 @@
         }
 
         setInterval(() => {
+            updateUserInfo();
+            getSessionId();            
             toggleMedalsCard()
             toggleEditDinoCard()
         }, 1500);
