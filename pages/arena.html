@@ -21,15 +21,8 @@
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
     <script src="../static/js/bootstrap.bundle.min.js"></script>
 
-    <style>
-        .table-image:td {
-            vertical-align: middle;
-        }
-    </style>
-
     <script src="../static/js/phaser.js"></script>
     <script src="../static/js/phaser-arcade-physics.js"></script>
-    <!-- <script src="../static/js/index.js"></script> -->
     <script src="../static/js/player.js"></script>
     <script src="../static/js/dino.js"></script>
     <script src="../static/js/game.js"></script>
@@ -117,6 +110,7 @@
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
         })
+        setSettingsPhaser();
     });
 </script>
 <script type="text/javascript">
@@ -131,9 +125,9 @@
     }
 </script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        setSettingsPhaser();
-    });
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     setSettingsPhaser();
+    // });
 </script>
 
 <!-- TODO periodically check if the session id in local storage is valid -->

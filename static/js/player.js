@@ -110,7 +110,7 @@ function _addPlayerToSession(playerid, code) {
             snapshot.forEach(function (childSnapshot) {
                 if (code == childSnapshot.key) {
                     db.ref(playerKey).set(playerObj);
-                    // localStorage.setItem("sessionId", code);
+                    localStorage.setItem("sessionId", code);
                     // window.open(destination, "_self");
                 }
             });

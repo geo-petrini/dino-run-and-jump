@@ -90,7 +90,7 @@ function setSettingsPhaser() {
                     left: false,
                     right: true
                 },
-                debug: false
+                debug: true
             }
         },
         parent: "gameDiv",
@@ -189,20 +189,6 @@ function setStartValues() {
             cactusValidation[i][j] = false;
         }
     }
-
-    // for (var i = 0; i < diniNicknames.length; i++) {
-        // TODO move inside Dino class
-        // if (diniNicknames[i].startsWith("guest_")) {
-        //     db.ref("session/" + localStorage.getItem("sessionId") + "/" + diniNicknames[i]).update({
-        //         is_jumping: false
-        //     });
-        // } else /*if (id.length == 28)*/ {
-        //     db.ref("session/" + localStorage.getItem("sessionId") + "/" + uids[i]).update({
-        //         is_jumping: false
-        //     });
-        // }
-    // }
-    // createListeners();
 }
 
 
@@ -213,12 +199,6 @@ function setStartValues() {
  */
 function setColliderLines() {
     colliderLines = game.physics.add.staticGroup();
-    // TODO moved to Dino, test
-    // for (var i = 0; i < NUM_DINI; i++) {
-    //     var height = START_HEIGHT + (i * HEIGHT_SPACE);
-    //     let line = game.add.zone(0, height, innerWidth, 1)
-    //     colliderLines.add(line);
-    // }
 }
 
 /**
@@ -284,16 +264,6 @@ function setCactus() {
 }
 
 /**
- * La funzione setDiniNicknames serve a fare apparire per ogni dino il suo nickname, visualizzandolo
- * a sinistra all'inizio della sua corsia.
- */
-// function setDiniNicknames() {
-//     for (var i = 0; i < diniNicknames.length; i++) {
-//         game.add.text(START_DISTANCE_DINI + (i * TRANSLATION) - 200, START_HEIGHT - 20 + HEIGHT_SPACE * i, diniNicknames[i], { fontFamily: 'Arial', fontSize: 20, color: '#000' });
-//     }
-// }
-
-/**
  * La funzione setDini crea i dini per ogni utente collegato.
  * Setta i dini nella posizione corretta in modo che si posizionino su una retta obliqua.
  * Imposta per ogni dino il suo colore.
@@ -357,12 +327,7 @@ function setAnimations() {
  * @param {*} dino Questo parametro è il dino che ha colliso e dunque quello a cui bisogna applicare le modifiche.
  */
 function collideCactus(dino) {
-    dino.setVelocityX(-200);
-    var index = dini.indexOf(dino);
-    dino.play("death");
-    if (colliderDini[index] != null || colliderDini[index] != undefined) {
-        this.physics.world.removeCollider(colliderDini[index]);
-    }
+    dino.die()
 }
 
 /**
@@ -395,7 +360,6 @@ function createGame() {
     setAnimations();
     setDini();
     setColliderCactusDini();
-    // setDiniNicknames();
 }
 
 
@@ -523,7 +487,10 @@ function checkEndOfGame(game) {
  */
 function updateGame() {
 
-    dini.forEach( update );
+    // dini.forEach( dino => {dino.update()});
+    for(const dino in dini){
+        dino.update()
+    }
     updateGrounds();
     updateMountains();
     updateCactus();

@@ -9,45 +9,74 @@ class Dino {
         this.nickname = ""
         this.score = 0
         this.x = 0
-        this.sessionPlayerReference = db.ref(`session/${localStorage.getItem("sessionId")}/${this.id}`)
+        this.y = 0
+        this.sessionPlayerReference = db.ref(`session/${localStorage.getItem("sessionId")}/players/${this.id}`)
         this.is_jumping = false
-        this._loadPlayerData()
+        this.initialize()
+
+    }
+
+    /** using explicit binding because "this" is not fully initialized and leads to errors when used in class methods while the class in not fully initialized */
+    initialize = () => {
+
+        // use _loadPlayerData with promises
+        this._initCoordinates()
+        this._loadPlayerData().then(() => {
+            // Now you can safely call functions that depend on data from _loadPlayerData
+            this._createPlayerName()
+            this._createSprite()    //must go after collider line
+        });
         this._createColliderLine()
-        this._createSprite()    //must go after collider line
-        this._createPlayerName()
         this._createJumpListener()
     }
 
 
+    _initCoordinates() {
+        this._initX()
+        this._initY()
+        console.log(`${this.id}: initialized coordinates: (${this.x}, ${this.y})`)
+    }
+    _initX() {
+        this.x = START_DISTANCE_DINI + (this.playerNumber * TRANSLATION)
+    }
+
+    _initY() {
+        this.y = START_HEIGHT + (this.playerNumber * HEIGHT_SPACE)
+    }
+
+    /** using arrow function to ensure that "this" is the same as the class "this" */
     _loadPlayerData() {
-        console.log(`this: ${this}`)
-        if (this.id.startsWith("guest_")) {
-            this.sessionPlayerReference.once("value", function (userData) {
-                this.dinoColor = userData.val().dino_color;
-            });
-            this.nickname = this.id
-        } else if (this.id.length == 28) {
-            db.ref(`user/${this.id}`).once("value", function (userData) {
-                this.nickname = userData.val().nickname;
-                this.dinoColor = userData.val().dino_color;
-            });
-        }
-        console.log(`loaded player data for ${this.id}`)
+        return new Promise((resolve, reject) => {
+            if (this.id.startsWith("guest_")) {
+                this.sessionPlayerReference.once("value", (userData) => {
+                    this.dinoColor = userData.val().dino_color;
+                    this.nickname = this.id;
+                    console.log(`${this.id}: loaded player data [${this.nickname}, ${this.dinoColor}]`);
+                    resolve();
+                });
+            } else if (this.id.length === 28) {
+                db.ref(`user/${this.id}`).once("value", (userData) => {
+                    this.nickname = userData.val().nickname;
+                    this.dinoColor = userData.val().dino_color;
+                    console.log(`${this.id}: loaded player data [${this.nickname}, ${this.dinoColor}]`);
+                    resolve();
+                });
+            }
+        });
     }
 
     _createSprite() {
-        // TODO load sprite and paint with correct color
-        this.dino = this.game.physics.add.sprite(START_DISTANCE_DINI + (this.playerNumber * TRANSLATION), 0, 'dinoSprite').setOrigin(0, 0);
+        this.dino = this.game.physics.add.sprite(this.x, this.y, 'dinoSprite').setOrigin(0, 0);
         this.dino.setTintFill(this.dinoColor, this.dinoColor, this.dinoColor, this.dinoColor);
         this.dino.setCollideWorldBounds(true); //collisioni del dino con i bordi
         this.game.physics.add.collider(this.dino, this.line);
         this.dino.play("run");
-        console.log(`created dino sprite data for ${this.id}`)
+        console.log(`${this.id}: loaded dino sprite data`)
     }
 
-    _createPlayerName(){
-        this.game.add.text(START_DISTANCE_DINI + (this.playerNumber * TRANSLATION) - 200, START_HEIGHT - 20 + HEIGHT_SPACE * this.playerNumber, this.nickname, { fontFamily: 'Arial', fontSize: 20, color: '#000' });
-        console.log(`created player name ${this.nickname} for ${this.id}`)
+    _createPlayerName() {
+        this.playerName = this.game.add.text(this.x - 200, this.y - 20, this.nickname, { fontFamily: 'Arial', fontSize: 20, color: '#000' });
+        console.log(`${this.id}: created player name "${this.nickname}"`)
     }
 
     _createJumpListener() {
@@ -60,9 +89,10 @@ class Dino {
     }
 
     _createColliderLine() {
-        let height = this.game.START_HEIGHT + (this.playerNumberi * game.HEIGHT_SPACE);
-        this.line = this.game.add.zone(0, height, 100, 1)
-        // this.game.colliderLines.add(line)
+        this.line = this.game.add.zone(this.x, this.y + 5, 100, 1)
+        colliderLines.add(this.line)
+        this.lineCollider = this.game.physics.add.collider(this.dino, this.line);
+        console.log(`${this.id}: created collider line at (${this.line.x}, ${this.line.y})`)
     }
 
     _updateGroundCollision() {
@@ -104,14 +134,18 @@ class Dino {
     }
 
 
-    die(){
+    die() {
         // TODO implement death, include instructions present in collideCactus
+        this.dino.setVelocityX(-100)
+        this.dino.play("death")
+        this.game.physics.world.removeCollider(this.lineCollider)
     }
 
     update() {
         // TODO update player dino sprite
         this._updateGroundCollision()
         this.doJump()
+        this.playerName.y = this.dino.y
     }
 }
 
