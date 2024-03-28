@@ -110,7 +110,7 @@
     </div>
 </body>
 
-<script>
+<script type="text/javascript">
     $(document).ready(function () {
         getSessionId();
         $(function () {
@@ -127,14 +127,20 @@
         document.getElementById('start-game').innerText = 'RESTART';
 
         // call the phaser startGame function
-        // startGame()
-        game.start()
+        startGame()
+        //game.start()
     }
 </script>
 <script>
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     setSettingsPhaser();
-    // });
+    document.addEventListener('DOMContentLoaded', function () {
+        setSettingsPhaser();
+    });
+</script>
+<script type="text/javascript">
+    function backToHome() {
+        db.ref('session/' + localStorage.getItem("sessionId")).remove();
+        window.open("index.html", "_self");
+    }    
 </script>
 
 <!-- TODO periodically check if the session id in local storage is valid -->
