@@ -32,14 +32,23 @@
         <div class="container">
             <a class="navbar-brand" href="../index.html"><img src="../static/img/dino_40x40.png" width="40" height="40" alt="Dino Jump And Run"></a>
             <div class="navbar">
-                <div class="btn-group">
-                    <div class="btn btn-outline-primary disabled"><span class="iconify" data-icon="bx:bx-user-circle" data-width="16"
-                            data-height="16"></span></div>
-                    <button type="button" class="btn btn-outline-primary d-none" id="btn_account"></button>
+                <div class="nav-item">
+                    <div class="btn-group">
+                        <div class="btn btn-outline-primary disabled"><span class="iconify" data-icon="bx:bx-user-circle" data-width="16"
+                                data-height="16"></span>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary d-none" id="btn_account"></button>
+                    </div>
                 </div>
                 <div class="nav-item">
-                    <div id="sessionId" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="bottom" title="Click to copy session id"
-                        onclick="copyToClipboard(this)">NOT CONNECTED</div>
+                    <div class="btn-group">
+                        <div class="btn btn-outline-dark disabled" data-toggle="modal" data-target="#connectModal">
+                            <span class="iconify" data-icon="bx:bx-link" data-width="16" data-height="16"></span>
+                        </div>                    
+                        <div id="sessionId" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="bottom" title="Click to copy session id"
+                            onclick="copyToClipboard(this)">NOT CONNECTED
+                        </div>
+                    </div>
                 </div>
             </div>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"

@@ -40,8 +40,14 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 ">
                     <li class="nav-item">
-                        <div id="sessionId" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="bottom"
-                            title="Click to copy session id" onclick="copyToClipboard(this)">NOT CONNECTED</div>
+                        <div class="btn-group">
+                            <div class="btn btn-outline-dark disabled" data-toggle="modal" data-target="#connectModal">
+                                <span class="iconify" data-icon="bx:bx-link" data-width="16" data-height="16"></span>
+                            </div>   
+                            <div id="sessionId" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="bottom"
+                                title="Click to copy session id" onclick="copyToClipboard(this)">NOT CONNECTED
+                            </div>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-outline-primary" data-toggle="modal" data-target="#connectModal"></span>Connect to session</a>
