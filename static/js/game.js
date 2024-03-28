@@ -1,6 +1,7 @@
 var host = "" //"/dino-run-and-jump/Game";
 var game;
 
+// TODO convert to class
 // TODO refactor "dini" using classes instead of multiple lists
 // TODO normalize guests and registered users
 // TODO normalize lanes as classes instead of multiple lists
@@ -24,6 +25,7 @@ const HEIGHT_DINI = 50;
 const COLLISION_CHECK = false;
 console.log('game consts initialized')
 
+
 // Inizializzare variabili di gioco
 var grounds;
 var mountains;
@@ -46,6 +48,8 @@ var childNum;
 var checkFirst = false;
 //#endregion
 
+var infoText;
+
 // var uids = [];
 var game;   //instance of game
 var runGame = false;
@@ -65,12 +69,15 @@ function setSettingsPhaser() {
         create: createGame,
         update: updateLobby
     };
+    console.log('sceneLobby initialized')
+
     var sceneGame = {
         key: 'sceneGame',
         preload: preloadGame,
         create: createGame,
         update: updateGame
     };
+    console.log('sceneGame initialized')
 
     var config = {
         type: Phaser.auto,
@@ -101,7 +108,10 @@ function setSettingsPhaser() {
         },
         backgroundColor: 0xFFFFFF,
     };
+    console.log('config initialized')
     game = new Phaser.Game(config);
+
+    console.log('new game initialized')
 }
 
 /**
@@ -117,6 +127,7 @@ function setSettingsPhaser() {
     var dino = new Dino(game, playerId, dini.length+1)
     dini.push(dino)
     game.scene.restart();
+    console.log(`new player ${playerId} joined the game, restarting instance`)
 });
 
 
@@ -141,7 +152,7 @@ function preloadGame() {
  * Il metodo permette al dino di saltare, senza però far muovere il gioco.
  * Quando la variabile runGame viene settata a true il metodo carica la scena di gioco.
  */
-function updateLobby() {
+function updateLobby(time, delta) {
 
     // setTouchingDown();
     // checkJump();
@@ -155,6 +166,7 @@ function updateLobby() {
 
         this.scene.switch('sceneGame');
     }
+    updateDebugInfo();
 }
 
 /**
@@ -345,6 +357,7 @@ function setColliderCactusDini() {
         for (var j = 0; j < cactus[i].length; j++) {
             game.physics.add.overlap(dini[i], cactus[i][j], collideCactus, null, game);
         }
+        console.log(`created cactus colliders for dino ${dini[i]}`)
     }
 }
 
@@ -356,6 +369,9 @@ function setColliderCactusDini() {
 function createGame() {
     document.getElementById('sessionId').innerHTML = localStorage.getItem("sessionId");
     game = this;
+
+    infoText = game.add.text(10, 100, { color: '#F00' });
+    infoText.setDepth( 9000 )
     
     setStartValues();
     setColliderLines();
@@ -409,6 +425,7 @@ function updateMountains() {
  * La funzione updateCactus sposta i cactus in modo da muoverli in linea con il resto.
  * Quando una linea (verticale) di cactus esce dal canvas viene riposizionata in fondo
  * in modo casuale come nella creazione.
+ * Il cactus non viene eliminato in modo da mantenerne il collisore
  */
 function updateCactus() {
     //cactus si spostano
@@ -491,7 +508,7 @@ function checkEndOfGame(game) {
  * Aggiorna il gioco facendo muovere terreni, montagne, cactus e la nuvola.
  * Inoltre imposta il punteggio e la difficoltà e controlla se il gioco finisce.
  */
-function updateGame() {
+function updateGame(time, delta) {
 
     // dini.forEach( dino => {dino.update()});
     for(const dino in dini){
@@ -503,6 +520,8 @@ function updateGame() {
     updateCloud();
     setScore();
     checkEndOfGame(this);
+
+    updateDebugInfo();
 }
 
 /**
@@ -609,3 +628,186 @@ function leaderboard() {
     // }
 }
 // #endregion
+
+function updateDebugInfo(){
+    let outstr = ''
+    //outstr += '\n' + `time: ${Date.now()}`;
+    // outstr += '\n' + `time: ${this.sys.game.loop.time.toString()}`;
+    outstr += "test"
+    infoText.setText(outstr);
+    // console.log(`infoText ${infoText.toJSON().stringify()}`)
+}
+function initConfig(){
+    console.log('sceneGame initialized')
+
+    const config = {
+        type: Phaser.auto,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        scene: [ArenaGame],
+        scale: {
+            autoCenter: Phaser.Scale.CENTER_BOTH,
+        },
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: {
+                    y: 3000
+                },
+                checkCollision: {
+                    up: true,
+                    down: false,
+                    left: false,
+                    right: true
+                },
+                debug: true
+            }
+        },
+        parent: "gameDiv",
+        dom: {
+            createContainer: true
+        },
+        backgroundColor: 0xFFFFFF,
+    };
+    return config;
+}
+
+class ArenaGame extends Phaser.Scene {
+
+    preload(){
+        
+        initPlayerJoinListener()
+        this.load.image('ground', host + '../static/img/terreno3.png');
+        this.load.image('mountains', host + '../static/img/montagne.png');
+        this.load.image('cloud', host + '../static/img/nuvola.png');
+        this.load.image('cactus', host + '../static/img/cactus.png');
+        this.load.spritesheet('dinoSprite', host + '../static/img/dinoSprite.png', {
+            frameWidth: 50,
+            frameHeight: 52
+        });        
+    }
+    create(){
+        initStartValues()
+        setColliderLines();
+        setGrounds();
+        setMountains();
+        setCloud();
+        setCactus();
+        setAnimations();
+        setDini();
+        setColliderCactusDini();        
+    }
+    update(time, delta){
+        if (runGame){
+            stopPlayerJoinListener()    // TODO verify if this should be moved in start()
+        }
+    }
+
+    start(){
+        this.runGame = true;
+        this.restart();
+    }
+
+    initStartValues() {
+        this.runGame = false;
+        this.grounds = new Array(NUM_GROUNDS);
+    
+        this.mountains = new Array(NUM_MOUNTAINS);
+    
+        this.cloud;
+    
+        this.dini = new Array(NUM_DINI);
+        this.cactus = new Array(NUM_DINI);
+    
+        for (var i = 0; i < this.cactus.length; i++) {
+            cactus[i] = new Array(NUM_CACTUS);
+        }
+    
+        this.colliderLines = [];
+    
+        this.minimumDistance = 260;
+        this.colliderDini = new Array(NUM_DINI);
+        this.backgroundSpeed = 3;
+    
+        this.cactusValidation = new Array(NUM_DINI);
+        for (var i = 0; i < this.cactusValidation.length; i++) {
+            cactusValidation[i] = new Array(NUM_CACTUS);
+        }
+    
+        for (var i = 0; i < this.cactusValidation.length; i++) {
+            for (var j = 0; j < cactusValidation[i].length; j++) {
+                cactusValidation[i][j] = false;
+            }
+        }
+    }  
+    
+    initPlayerJoinListener(){
+        db.ref(`session/${localStorage.getItem("sessionId")}/players`).on("child_added", function(snapshot) {
+            db.ref(`session/${localStorage.getItem("sessionId")}/players`).once('value', function(sessionSnapshot) {
+                childNum = sessionSnapshot.numChildren();
+            });
+        
+            var playerId = snapshot.key
+            var dino = new Dino(game, playerId, dini.length+1)
+            this.dini.push(dino)
+            // game.scene.restart();
+            console.log(`new player ${playerId} joined the game, restarting instance`)
+        });        
+    }
+
+    setColliderLines() {
+        this.colliderLines = this.physics.add.staticGroup();
+    }    
+
+    setGrounds() {
+        var xPosition = 0;
+        for (var i = 0; i < this.grounds.length; i++) {
+            grounds[i] = this.physics.add.image(xPosition, 368, 'ground').setOrigin(0, 0);
+            grounds[i].setImmovable(true); // fissa i terreni
+            grounds[i].body.allowGravity = false; // toglie la gravità
+            xPosition += 2000;  // width of a ground image
+        }
+    } 
+    
+    setMountains() {
+        counter = 0;
+        for (var i = 0; i < this.mountains.length; i++) {
+            mountains[i] = this.physics.add.image(counter, 275, 'mountains').setOrigin(0, 0);
+            mountains[i].setImmovable(true); //fissa le mountains
+            mountains[i].body.allowGravity = false; // toglie la gravità
+            counter += 408;
+        }
+    }   
+    
+    setCloud() {
+        this.cloud = this.add.image(1200, 255, 'cloud').setOrigin(0, 0);
+    }  
+    
+    setCactus() {
+
+        for (var i = 0; i < this.cactus.length; i++) {
+            for (var j = 0; j < cactus[i].length; j++) {
+                var distance = Math.floor(Math.random() * 200) + 70;
+                var x = 0;
+                if (j == 0) {
+                    x = START_DISTANCE_CACTUS + (i * TRANSLATION);
+                } else if (i == 0) {
+                    x = (cactus[i][j - 1]).x + minimumDistance + distance;
+                } else {
+                    x = cactus[i - 1][j].x + TRANSLATION;
+                }
+                cactus[i][j] = game.physics.add.image(x, START_HEIGHT + (i * HEIGHT_SPACE) - HEIGHT_CACTUS, 'cactus').setOrigin(0, 0);
+                cactus[i][j].setImmovable(true);
+                cactus[i][j].body.allowGravity = false;
+            }
+        }
+    }    
+
+    stopPlayerJoinListener(){
+        db.ref("session/" + localStorage.getItem("sessionId")).off("child_added", function(snapshot) {
+            // game.scene.restart();
+        });        
+    }
+}
+
+const game = new Phaser.Game( initConfig() )
