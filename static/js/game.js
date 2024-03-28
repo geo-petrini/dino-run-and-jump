@@ -20,6 +20,8 @@ const START_DISTANCE_DINI = 240;
 const TRANSLATION = 20;
 const HEIGHT_CACTUS = 50;
 const HEIGHT_DINI = 50;
+
+const COLLISION_CHECK = false;
 console.log('game consts initialized')
 
 // Inizializzare variabili di gioco
@@ -327,7 +329,11 @@ function setAnimations() {
  * @param {*} dino Questo parametro è il dino che ha colliso e dunque quello a cui bisogna applicare le modifiche.
  */
 function collideCactus(dino) {
-    dino.die()
+    if (COLLISION_CHECK){
+        dino.die()
+    } else {
+        console.log(`detected collision for dino ${dino}`)
+    }
 }
 
 /**
