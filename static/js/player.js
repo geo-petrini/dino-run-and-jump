@@ -367,14 +367,15 @@ function saveDinoColor() {
     } catch (error) {
         var idUsr = null;
     }
-    color = document.getElementById('color_input').value;
-    color = colorHexToPhaser
+    var color_picked = document.getElementById('color_input').value;
+    var color = colorHexToPhaser(color_picked)
     if (localStorage.getItem('guestId') != null && idUsr == null) {
         db.ref('session/').once('value', function (snapshot) {
 
             snapshot.forEach(function (childSnapshot) {
                 if (localStorage.getItem("code") == childSnapshot.key) {
-                    color = colorHexToPhaser
+                    color = colorHexToPhaser(color_picked)
+                    console.log(`saving dino color for ${localStorage.getItem('guestId')} to ${color}`)
                     db.ref(`'session/${childSnapshot.key}/players/${localStorage.getItem('guestId')}`).set({
                         is_jumping: false,
                         is_touchingDown: true,
@@ -388,6 +389,7 @@ function saveDinoColor() {
             window.open("game.html", "_self");
         });
     } else {
+        console.log(`saving dino color for player ${firebase.auth().currentUser.uid} to ${color}`)
         db.ref(`user/${firebase.auth().currentUser.uid}`).update({
             dino_color: color,
         }).then(() => {
