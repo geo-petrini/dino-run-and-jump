@@ -140,13 +140,15 @@ function setSessionCode(inputCode = null) {
  */
 
 // TODO add origin so that connection is possible also from the arena
-function connectToGame(code = null) {
+function connectToGame(code = null, origin=null) {
+    // console.log(`caller: ${connectToGame.caller}`)
     code = setSessionCode(code)
     let playerid = getPlayerId()
-
-    if (playerid == null || playerid == 'null') {
-        displayAlert("Invalid user, either login or get a guest account")
-        return false
+    if (origin != "arena"){
+        if (playerid == null || playerid == 'null') {
+            displayAlert("Invalid user, either login or get a guest account")
+            return false
+        }
     }
 
     if (code == null || code == 'null') {
@@ -155,7 +157,7 @@ function connectToGame(code = null) {
     }
 
     //async stuff going on here
-    if (_canConnectToGame(code)) {
+    if (_canConnectToGame(code) && origin != "arena") {
         _addPlayerToSession(playerid, code)
     } else {
         displayAlert("Troppi giocatori nella sessione")
