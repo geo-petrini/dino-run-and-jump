@@ -124,7 +124,7 @@ class ArenaGame extends Phaser.Scene {
     runGame = false;
 
     preload(){
-        this.initPlayerJoinListener()
+        this.initPlayerJoinListener()   // does not check for players already in game
         this.initSprites()
     }
     create(){
@@ -151,6 +151,10 @@ class ArenaGame extends Phaser.Scene {
             updateCloud();
             updateScore();
             checkEndOfGame();            
+        } else {
+            for(const dino in dini){
+                dino.update()
+            }         
         }
     }
 
