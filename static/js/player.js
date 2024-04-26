@@ -27,7 +27,7 @@ var isTouchingDown = true;
 var childNum;
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
-//#region bacheca.html
+//#region bacheca
 function writeMedals(destination) {
     db.ref(`user/${localStorage.getItem("userUid")}/medals`).once('value', function (medalsData) {
         var elemento = document.getElementById(destination);
@@ -40,7 +40,7 @@ function writeMedals(destination) {
 
 //#endregion
 
-//#region collegamentoPartita.html
+//#region collegamento partita
 
 
 /** la funzione prende come argomento il codice sessione di una partita e verifica il numero di giocatori*/
@@ -480,7 +480,7 @@ firebase.auth().onAuthStateChanged((user) => {
         var path = window.location.pathname;
         path = path.split("/");
         path = path[path.length - 1];
-        //dino-run-and-jump/GUI%20telefono/paginaUtente.html
+
         if (path == "player.html") {
             updateUserInfo()
         }
