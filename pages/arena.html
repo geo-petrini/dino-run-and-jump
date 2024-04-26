@@ -99,12 +99,15 @@
                         <label for="email" class="col-sm-2 col-form-label">Session</label>
                         <div class="col-sm-10">
                             <input type="number" class="form-control" id="code" placeholder="code">
+                            <input type="hidden" id="origin" value="arena">
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-outline-primary" data-dismiss="modal" onclick="connectToGame()">Connect</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+                    <!-- <button class="btn btn-outline-primary" data-dismiss="modal" onclick="connectToGame(document.getElementById('code').value, document.getElementById('origin').value)">Connect</button> -->
+                    <button class="btn btn-outline-primary" data-dismiss="modal" onclick="connectToGame($('#code')[0].value, $('#origin')[0].value)">Connect</button>
                 </div>
             </div>
         </div>

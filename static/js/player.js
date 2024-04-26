@@ -137,10 +137,12 @@ function setSessionCode(inputCode = null) {
 /**
  * La funzione connectToGame prende il codice della partita inserita dall'utente e se esiste lo aggiunge alla partita.
  * Ogni partita può avere al massimo 10 giocatori connessi.
+ * Se code non è definito questo viene caricato da setSessionCode()
  */
 
 // TODO add origin so that connection is possible also from the arena
 function connectToGame(code = null, origin=null) {
+    console.log(`code: ${code}, origin: ${origin}`)
     // console.log(`caller: ${connectToGame.caller}`)
     code = setSessionCode(code)
     let playerid = getPlayerId()
@@ -157,10 +159,12 @@ function connectToGame(code = null, origin=null) {
     }
 
     //async stuff going on here
-    if (_canConnectToGame(code) && origin != "arena") {
-        _addPlayerToSession(playerid, code)
-    } else {
-        displayAlert("Troppi giocatori nella sessione")
+    if (origin != "arena"){
+        if (_canConnectToGame(code)) {
+            _addPlayerToSession(playerid, code)
+        } else {
+            displayAlert("Troppi giocatori nella sessione")
+        }
     }
 }
 
@@ -303,7 +307,7 @@ function chkSessionId(code) {
             if (doc.exists && doc.toJSON() != null) {
                 //console.log(`session with code ${code} exists`)
                 // console.log(`session with code ${code} exists: ${JSON.stringify(doc.toJSON())}`)
-                console.log(`session with code ${code} exists: ${doc.toJSON()}`)
+                // console.log(`session with code ${code} exists: ${doc.toJSON()}`)
             } else {
                 console.log(`session with code ${code} does not exists`)
                 localStorage.removeItem("sessionId")
@@ -442,8 +446,7 @@ function showUserInformation() {
 function updateUserInfo() {
     let guestId = localStorage.getItem('guestId');
     let user = firebase.auth().currentUser;
-    console.log(`guestId: ${guestId}`)
-    console.log(`user: ${user}`)
+    console.log(`userinfo: user=${user!=null ? user.email.split("@")[0] : user}, guestId=${guestId}`)
     if ((guestId != null && guestId != "null") || (user != null && user != "null")) {
 
         document.getElementById("div_signin").style.display = "none";   //hide sign in button
