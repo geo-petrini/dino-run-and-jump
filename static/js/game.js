@@ -534,12 +534,6 @@ function backToHome() {
 }
 
 
-
-
-// #region REFACTORING ###################################################################
-
-
-
 /**
  * Il metodo setScore imposta il punteggio per ogni dino, incrementandolo per ogni cactus superato.
  * Per evitare l'assegnazione dei punti dei cactus già precedentemente superati, si utilizza la matrice 
@@ -608,4 +602,3 @@ function leaderboard() {
     //     i++;
     // }
 }
-// #endregion
