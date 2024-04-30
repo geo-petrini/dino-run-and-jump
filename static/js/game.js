@@ -22,7 +22,7 @@ const HEIGHT_CACTUS = 50;
 const HEIGHT_DINI = 50;
 
 const COLLISION_CHECK = false;
-console.log('game consts initialized')
+console.debug('game consts initialized')
 
 // Inizializzare variabili di gioco
 var grounds;
@@ -99,7 +99,7 @@ function setSettingsPhaser() {
         dom: {
             createContainer: true
         },
-        backgroundColor: 0xFFFFFF,
+        backgroundColor: 0x336342,
     };
     game = new Phaser.Game(config);
 }
@@ -193,6 +193,26 @@ function setStartValues() {
     }
 }
 
+/**
+ * Loads players already connected to the specified session
+ */
+function initConnectedDini(){
+    console.debug(`initialized players ${dini.length}`)
+    if (dini.length == 0){
+        console.debug('init connected players')
+        db.ref(`session/${localStorage.getItem('sessionId')}/players`).once('value')
+        .then(function (sessionData) {
+            sessionData.forEach(function (sessionPlayer) {
+                var playerId = sessionPlayer.key
+                console.debug(`player fround ${playerId}`)
+                var dino = new Dino(game, playerId, dini.length+1)
+                dini.push(dino)
+            })
+            // game.scene.restart();
+        })
+    }
+}
+
 
 /**
  * Il metodo setColliderLines crea delle linee di sostegno per i dini.
@@ -265,24 +285,6 @@ function setCactus() {
     }
 }
 
-/**
- * La funzione setDini crea i dini per ogni utente collegato.
- * Setta i dini nella posizione corretta in modo che si posizionino su una retta obliqua.
- * Imposta per ogni dino il suo colore.
- * Imposta per ogni dino la collisione con la sua linea di sostegno create precedentemente nel metodo setColliderLines.
- * Come ultima cosa attiva l'animazione di corsa dei dini.
- */
-// TODO move to Dino class
-function setDini() {
-    graphics = game.add.graphics({ lineStyle: { width: 4, color: 0xaa00aa } });
-    for (var i = 0; i < dini.length; i++) {
-        // dini[i] = game.physics.add.sprite(START_DISTANCE_DINI + (i * TRANSLATION), 0, 'dinoSprite').setOrigin(0, 0);
-        // dini[i].setTintFill(diniColor[i], diniColor[i], diniColor[i], diniColor[i]);
-        // dini[i].setCollideWorldBounds(true); //collisioni del dino con i bordi
-        // colliderDini[i] = game.physics.add.collider(dini[i], colliderLines.getChildren()[i]);
-        // dini[i].play("run");
-    }
-}
 
 /**
  * Questa funzione crea le animazioni dei dini da poter utilizzare nel codice.
@@ -332,7 +334,7 @@ function collideCactus(dino) {
     if (COLLISION_CHECK){
         dino.die()
     } else {
-        console.log(`detected collision for dino ${dino}`)
+        console.debug(`detected collision for dino ${dino}`)
     }
 }
 
@@ -356,16 +358,18 @@ function setColliderCactusDini() {
 function createGame() {
     document.getElementById('sessionId').innerHTML = localStorage.getItem("sessionId");
     game = this;
-    
+   
     setStartValues();
+    initConnectedDini();
     setColliderLines();
     setGrounds();
     setMountains();
     setCloud();
     setCactus();
     setAnimations();
-    setDini();
     setColliderCactusDini();
+
+    const r1 = this.add.line(0, 0, 1, 1, 1400, 1, 0xff00ff, 1);
 }
 
 
@@ -492,7 +496,6 @@ function checkEndOfGame(game) {
  * Inoltre imposta il punteggio e la difficoltà e controlla se il gioco finisce.
  */
 function updateGame() {
-
     // dini.forEach( dino => {dino.update()});
     for(const dino in dini){
         dino.update()
@@ -503,6 +506,8 @@ function updateGame() {
     updateCloud();
     setScore();
     checkEndOfGame(this);
+
+    console.log(`game: players count: ${NUM_DINI}`)
 }
 
 /**

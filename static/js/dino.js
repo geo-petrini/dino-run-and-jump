@@ -27,6 +27,7 @@ class Dino {
             this._createSprite()    //must go after collider line
         });
         this._createColliderLine()
+        this._createVisibleColliderLine()
         this._createJumpListener()
     }
 
@@ -34,7 +35,7 @@ class Dino {
     _initCoordinates() {
         this._initX()
         this._initY()
-        console.log(`${this.id}: initialized coordinates: (${this.x}, ${this.y})`)
+        console.debug(`${this.id}: initialized coordinates: (${this.x}, ${this.y})`)
     }
     _initX() {
         this.x = START_DISTANCE_DINI + (this.playerNumber * TRANSLATION)
@@ -51,14 +52,14 @@ class Dino {
                 this.sessionPlayerReference.once("value", (userData) => {
                     this.dinoColor = userData.val().dino_color;
                     this.nickname = this.id;
-                    console.log(`${this.id}: loaded player data [${this.nickname}, ${this.dinoColor}]`);
+                    console.debug(`${this.id}: loaded player data [${this.nickname}, ${this.dinoColor}]`);
                     resolve();
                 });
             } else if (this.id.length === 28) {
                 db.ref(`user/${this.id}`).once("value", (userData) => {
                     this.nickname = userData.val().nickname;
                     this.dinoColor = userData.val().dino_color;
-                    console.log(`${this.id}: loaded player data [${this.nickname}, ${this.dinoColor}]`);
+                    console.debug(`${this.id}: loaded player data [${this.nickname}, ${this.dinoColor}]`);
                     resolve();
                 });
             }
@@ -71,12 +72,12 @@ class Dino {
         this.dino.setCollideWorldBounds(true); //collisioni del dino con i bordi
         this.game.physics.add.collider(this.dino, this.line);
         this.dino.play("run");
-        console.log(`${this.id}: loaded dino sprite data`)
+        console.debug(`${this.id}: loaded dino sprite data`)
     }
 
     _createPlayerName() {
         this.playerName = this.game.add.text(this.x - 200, this.y - 20, this.nickname, { fontFamily: 'Arial', fontSize: 20, color: '#000' });
-        console.log(`${this.id}: created player name "${this.nickname}"`)
+        console.debug(`${this.id}: created player name "${this.nickname}"`)
     }
 
     _createJumpListener() {
@@ -92,7 +93,16 @@ class Dino {
         this.line = this.game.add.zone(this.x, this.y + 5, 100, 1)
         colliderLines.add(this.line)
         this.lineCollider = this.game.physics.add.collider(this.dino, this.line);
-        console.log(`${this.id}: created collider line at (${this.line.x}, ${this.line.y})`)
+        console.debug(`${this.id}: created collider line at (${this.line.x}, ${this.line.y})`)
+    }
+
+    _createVisibleColliderLine(){
+        const graphics = this.game.add.graphics();
+        graphics.lineStyle(2, 0x0000ee, 1); //width, color, alpha
+        graphics.moveto(this.x, this.y + 5);
+        graphics.lineTo(100, 1);
+        // graphics.lineBetween(this.x, this.y + 5, 100, 1);
+        graphics.strokePath();
     }
 
     _updateGroundCollision() {
